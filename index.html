@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R&L Plumb | Procurement Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 text-sm">
+<div class="flex h-screen overflow-hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="w-56 bg-[#0f2d4a] text-white flex flex-col flex-shrink-0">
+    <div class="px-5 py-4 border-b border-[#1a3d5c]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-yellow-400 rounded-lg flex items-center justify-center flex-shrink-0">
+          <span class="text-[#0f2d4a] font-extrabold text-sm">RL</span>
+        </div>
+        <div>
+          <div class="font-bold text-white leading-tight">R&amp;L Plumb</div>
+          <div class="text-xs text-blue-300">Procurement Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1">
+      <button onclick="navigate('ccs')" id="nav-ccs" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium bg-blue-700 text-white text-sm">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Scheduled CCs
+      </button>
+      <button onclick="navigate('pos')" id="nav-pos" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-blue-200 hover:bg-[#1a3d5c] hover:text-white text-sm">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Purchase Orders
+      </button>
+      <button onclick="navigate('stock')" id="nav-stock" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-blue-200 hover:bg-[#1a3d5c] hover:text-white text-sm">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Stock
+      </button>
+    </nav>
+    <div class="px-4 py-3 border-t border-[#1a3d5c]">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">BJ</div>
+        <div>
+          <div class="text-white text-xs font-semibold leading-tight">Billiejean</div>
+          <div class="text-blue-400 text-xs">Procurement</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- Top bar -->
+    <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
+      <div id="breadcrumb" class="text-sm text-gray-500 font-medium">Scheduled Cost Centres</div>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 text-xs text-gray-400">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-400 rounded-full"></span>SimPro</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-400 rounded-full"></span>Monday.com</span>
+        </div>
+        <button onclick="navigate('bulk-order')" class="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-[#0f2d4a] font-bold text-sm px-3.5 py-2 rounded-lg">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Order <span id="cart-badge" class="bg-[#0f2d4a] text-yellow-400 text-xs font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-auto">
+
+      <!-- VIEW: Scheduled Cost Centres (PRIMARY) -->
+      <div id="view-ccs" class="p-6 pb-28">
+        <div class="flex items-center justify-between mb-4">
+          <h1 class="text-xl font-extrabold text-gray-900">Scheduled Cost Centres – Materials Required</h1>
+          <span class="text-xs text-gray-400">Today: <span id="today-display"></span></span>
+        </div>
+
+        <!-- Filter -->
+        <div class="flex items-center gap-2 mb-5">
+          <span class="text-xs font-semibold text-gray-500 uppercase mr-1">Show:</span>
+          <button onclick="setFilter(3)" id="filter-3" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Next 3 Days</button>
+          <button onclick="setFilter(5)" id="filter-5" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 5 Days</button>
+          <button onclick="setFilter(7)" id="filter-7" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 7 Days</button>
+          <button onclick="setFilter(99)" id="filter-99" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All Upcoming</button>
+        </div>
+
+        <!-- Summary -->
+        <div id="summary-bar" class="mb-4"></div>
+
+        <!-- Select all -->
+        <div class="flex items-center gap-3 px-1 mb-2">
+          <input type="checkbox" id="select-all-cb" onchange="toggleSelectAll(this.checked)" class="w-4 h-4 rounded border-gray-400 text-blue-600 cursor-pointer">
+          <label for="select-all-cb" class="text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none">Select All</label>
+        </div>
+
+        <div id="cc-list"></div>
+      </div>
+
+      <!-- VIEW: Bulk Order -->
+      <div id="view-bulk-order" class="p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <button onclick="navigate('ccs')" class="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <h1 class="text-xl font-bold text-gray-900">Bulk Order</h1>
+        </div>
+        <div id="bulk-order-content"></div>
+      </div>
+
+      <!-- VIEW: Purchase Orders -->
+      <div id="view-pos" class="p-6 hidden">
+        <h1 class="text-xl font-bold text-gray-900 mb-5">Purchase Orders</h1>
+        <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+          <p class="text-gray-400">Sent purchase orders will appear here.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: Stock -->
+      <div id="view-stock" class="p-6 hidden">
+        <h1 class="text-xl font-bold text-gray-900 mb-5">Stock</h1>
+        <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+          <p class="text-gray-400">Stock levels will appear here.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- STICKY FOOTER (selection actions) -->
+<div id="selection-footer" class="hidden fixed bottom-0 bg-white border-t-2 border-blue-600 px-6 py-3 flex items-center justify-between shadow-xl z-40" style="left:224px;right:0">
+  <span id="selection-summary" class="text-sm font-semibold text-gray-700"></span>
+  <div class="flex gap-3">
+    <button onclick="batchAssignStock()" class="flex items-center gap-2 text-sm px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      Assign from Stock
+    </button>
+    <button onclick="batchAddToOrder()" class="flex items-center gap-2 text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add to Order
+    </button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="handleOverlayClick(event)">
+  <div id="modal-box" class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-auto shadow-2xl">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+function daysFromNow(n) { const d = new Date(TODAY); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; }
+
+const jobs = [
+  {
+    id:'J-2847', address:'123 Rosehill Drive, Papakura', tech:'Ryan T.', status:'Pending',
+    notes:[],
+    costCentres:[
+      { id:'CC-001', name:'Bathroom', scheduledDate:daysFromNow(1), materials:[
+        {id:'m1', desc:'40mm P-Trap',          qtyReq:2, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:8.50},
+        {id:'m2', desc:'Tapware Set – Chrome',  qtyReq:1, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:185.00},
+        {id:'m3', desc:'15mm Copper Pipe 3m',   qtyReq:3, qtyAssigned:1, supplier:'Tradelink',      supplierEmail:'trade@tradelink.co.nz',      unitCost:24.00},
+      ]},
+      { id:'CC-002', name:'Hot Water Cylinder', scheduledDate:daysFromNow(2), materials:[
+        {id:'m4', desc:'180L Hot Water Cylinder', qtyReq:1, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:895.00},
+        {id:'m5', desc:'Expansion Valve 350kPa',  qtyReq:1, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:45.00},
+      ]},
+    ]
+  },
+  {
+    id:'J-2851', address:'45 Great South Rd, Manurewa', tech:'Steve K.', status:'Pending',
+    notes:[],
+    costCentres:[
+      { id:'CC-003', name:'Rough-In', scheduledDate:daysFromNow(3), materials:[
+        {id:'m6', desc:'100mm Soil Pipe 6m',      qtyReq:4, qtyAssigned:0, supplier:'Reece',         supplierEmail:'orders@reece.co.nz',         unitCost:38.00},
+        {id:'m7', desc:'40mm P-Trap',              qtyReq:6, qtyAssigned:2, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:8.50},
+        {id:'m8', desc:'Inspection Opening 100mm', qtyReq:2, qtyAssigned:0, supplier:'Reece',         supplierEmail:'orders@reece.co.nz',         unitCost:22.00},
+      ]},
+    ]
+  },
+  {
+    id:'J-2863', address:'8 Cavendish Drive, Manukau', tech:'Ben M.', status:'In Progress',
+    notes:[],
+    costCentres:[
+      { id:'CC-004', name:'Toilets', scheduledDate:daysFromNow(4), materials:[
+        {id:'m9',  desc:'Close Coupled Suite', qtyReq:3, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:425.00},
+        {id:'m10', desc:'Cistern Fill Valve',  qtyReq:3, qtyAssigned:3, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:18.00},
+      ]},
+      { id:'CC-005', name:'Basins', scheduledDate:daysFromNow(5), materials:[
+        {id:'m11', desc:'Caroma Hand Basin 400mm', qtyReq:4, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:195.00},
+        {id:'m12', desc:'Basin Mixer Tap',          qtyReq:4, qtyAssigned:0, supplier:'Tradelink',      supplierEmail:'trade@tradelink.co.nz',      unitCost:145.00},
+      ]},
+      // CC-006 is 8 days out — will NOT appear in 7-day filter, even though CC-004/005 for same job do
+      { id:'CC-006', name:'Hot Water', scheduledDate:daysFromNow(8), materials:[
+        {id:'m13', desc:'300L Commercial HWC', qtyReq:1, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:1850.00},
+      ]},
+    ]
+  }
+];
+
+// ===== STATE =====
+let cart = [];
+let selectedMaterials = new Set();
+let currentFilter = 3;
+let collapsedCCs = new Set();
+let poCounter = 1001;
+
+// ===== UTILITIES =====
+function updateCartBadge() { document.getElementById('cart-badge').textContent = cart.length; }
+
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const diff = Math.round((d - TODAY) / 864e5);
+  const s = d.toLocaleDateString('en-NZ', {weekday:'short', day:'numeric', month:'short'});
+  if (diff === 0) return 'Today · ' + s;
+  if (diff === 1) return 'Tomorrow · ' + s;
+  return diff + ' days · ' + s;
+}
+
+function getFilteredCCs() {
+  const end = new Date(TODAY);
+  end.setDate(end.getDate() + (currentFilter === 99 ? 365 : currentFilter));
+  const result = [];
+  jobs.forEach(job => job.costCentres.forEach(cc => {
+    const d = new Date(cc.scheduledDate + 'T00:00:00');
+    if (d >= TODAY && d <= end) result.push({cc, job});
+  }));
+  result.sort((a,b) => new Date(a.cc.scheduledDate) - new Date(b.cc.scheduledDate));
+  return result;
+}
+
+function getAllFilteredMatIds() { return getFilteredCCs().flatMap(({cc}) => cc.materials.map(m => m.id)); }
+
+function findMat(matId) {
+  for (const job of jobs) for (const cc of job.costCentres) {
+    const mat = cc.materials.find(m => m.id === matId);
+    if (mat) return {mat, cc, job};
+  }
+  return null;
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'fixed top-4 right-4 bg-gray-900 text-white text-sm px-4 py-2.5 rounded-lg shadow-lg z-[999]';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 2200);
+}
+
+// ===== NAVIGATION =====
+function navigate(view) {
+  document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('bg-blue-700','text-white'); n.classList.add('text-blue-200'); });
+  const views = {ccs:'view-ccs', 'bulk-order':'view-bulk-order', pos:'view-pos', stock:'view-stock'};
+  const navs  = {ccs:'nav-ccs', 'bulk-order':'nav-pos', pos:'nav-pos', stock:'nav-stock'};
+  const titles = {ccs:'Scheduled Cost Centres', 'bulk-order':'Bulk Order', pos:'Purchase Orders', stock:'Stock'};
+  document.getElementById(views[view]).classList.remove('hidden');
+  const nav = document.getElementById(navs[view]);
+  if (nav) { nav.classList.add('bg-blue-700','text-white'); nav.classList.remove('text-blue-200'); }
+  document.getElementById('breadcrumb').textContent = titles[view];
+  if (view === 'ccs') renderCCList();
+  if (view === 'bulk-order') renderBulkOrder();
+  document.getElementById('selection-footer').classList[view==='ccs' && selectedMaterials.size>0 ? 'remove' : 'add']('hidden');
+  updateCartBadge();
+}
+
+// ===== FILTER =====
+function setFilter(days) {
+  currentFilter = days;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('bg-[#0f2d4a]','text-white');
+    b.classList.add('text-gray-600','bg-white','border','border-gray-300');
+  });
+  const el = document.getElementById('filter-' + days);
+  if (el) { el.classList.add('bg-[#0f2d4a]','text-white'); el.classList.remove('text-gray-600','bg-white','border','border-gray-300'); }
+  selectedMaterials.clear();
+  renderCCList();
+  updateStickyFooter();
+}
+
+// ===== SELECTION =====
+function toggleSelectAll(checked) {
+  getAllFilteredMatIds().forEach(id => checked ? selectedMaterials.add(id) : selectedMaterials.delete(id));
+  document.querySelectorAll('.mat-cb').forEach(cb => cb.checked = checked);
+  document.querySelectorAll('.cc-cb').forEach(cb => { cb.checked = checked; cb.indeterminate = false; });
+  updateStickyFooter();
+}
+
+function toggleCC(ccId, checked) {
+  const row = getFilteredCCs().find(r => r.cc.id === ccId);
+  if (!row) return;
+  row.cc.materials.forEach(mat => {
+    checked ? selectedMaterials.add(mat.id) : selectedMaterials.delete(mat.id);
+    const cb = document.getElementById('mat-cb-'+mat.id);
+    if (cb) cb.checked = checked;
+  });
+  const ccCb = document.getElementById('cc-cb-'+ccId);
+  if (ccCb) { ccCb.checked = checked; ccCb.indeterminate = false; }
+  updateSelectAllCb();
+  updateStickyFooter();
+}
+
+function toggleMaterial(matId, checked) {
+  checked ? selectedMaterials.add(matId) : selectedMaterials.delete(matId);
+  const r = findMat(matId); if (!r) return;
+  const allSel = r.cc.materials.every(m => selectedMaterials.has(m.id));
+  const someSel = r.cc.materials.some(m => selectedMaterials.has(m.id));
+  const ccCb = document.getElementById('cc-cb-'+r.cc.id);
+  if (ccCb) { ccCb.checked = allSel; ccCb.indeterminate = someSel && !allSel; }
+  updateSelectAllCb();
+  updateStickyFooter();
+}
+
+function updateSelectAllCb() {
+  const all = getAllFilteredMatIds();
+  const cb = document.getElementById('select-all-cb');
+  if (!cb) return;
+  const allSel = all.length > 0 && all.every(id => selectedMaterials.has(id));
+  const someSel = all.some(id => selectedMaterials.has(id));
+  cb.checked = allSel; cb.indeterminate = someSel && !allSel;
+}
+
+function updateStickyFooter() {
+  const footer = document.getElementById('selection-footer');
+  if (selectedMaterials.size === 0) { footer.classList.add('hidden'); return; }
+  footer.classList.remove('hidden');
+  const assignable = [...selectedMaterials].filter(id => { const r=findMat(id); return r && r.mat.qtyAssigned < r.mat.qtyReq; }).length;
+  document.getElementById('selection-summary').textContent =
+    selectedMaterials.size + ' item' + (selectedMaterials.size!==1?'s':'') + ' selected' +
+    (assignable > 0 ? ' · ' + assignable + ' can be assigned from stock' : '');
+}
+
+// ===== BATCH ACTIONS =====
+function batchAssignStock() {
+  let n = 0;
+  selectedMaterials.forEach(id => { const r=findMat(id); if(r && r.mat.qtyAssigned < r.mat.qtyReq){ r.mat.qtyAssigned=r.mat.qtyReq; n++; }});
+  selectedMaterials.clear();
+  renderCCList(); updateStickyFooter();
+  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' assigned from stock');
+}
+
+function batchAddToOrder() {
+  let n = 0;
+  selectedMaterials.forEach(id => {
+    if (cart.some(i => i.materialId===id)) return;
+    const r = findMat(id); if (!r) return;
+    const qty = r.mat.qtyReq - r.mat.qtyAssigned;
+    if (qty > 0) { cart.push({materialId:id, jobId:r.job.id, ccId:r.cc.id, qty}); n++; }
+  });
+  selectedMaterials.clear();
+  updateCartBadge(); renderCCList(); updateStickyFooter();
+  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' added to order');
+}
+
+// ===== RENDER CC LIST =====
+function renderCCList() {
+  const filtered = getFilteredCCs();
+
+  // Count excluded CCs (for the hint)
+  const endDate = new Date(TODAY); endDate.setDate(endDate.getDate() + (currentFilter===99?365:currentFilter));
+  let excluded = 0;
+  jobs.forEach(job => job.costCentres.forEach(cc => {
+    const d = new Date(cc.scheduledDate+'T00:00:00');
+    if (d > endDate) excluded++;
+  }));
+
+  const totalItems = filtered.reduce((s,{cc})=>s+cc.materials.filter(m=>m.qtyReq-m.qtyAssigned>0).length, 0);
+  const totalCost  = filtered.reduce((s,{cc})=>s+cc.materials.reduce((ss,m)=>ss+Math.max(0,m.qtyReq-m.qtyAssigned)*m.unitCost,0), 0);
+
+  document.getElementById('summary-bar').innerHTML = filtered.length===0 ? '' : `
+    <div class="flex items-center gap-0 bg-white border border-gray-200 rounded-xl shadow-sm mb-1 overflow-hidden">
+      <div class="text-center px-6 py-3 border-r border-gray-200">
+        <div class="text-2xl font-extrabold text-[#0f2d4a]">${filtered.length}</div>
+        <div class="text-xs text-gray-400 font-medium">Cost Centres</div>
+      </div>
+      <div class="text-center px-6 py-3 border-r border-gray-200">
+        <div class="text-2xl font-extrabold text-orange-500">${totalItems}</div>
+        <div class="text-xs text-gray-400 font-medium">Items to Order</div>
+      </div>
+      <div class="text-center px-6 py-3">
+        <div class="text-2xl font-extrabold text-gray-700">$${totalCost.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div class="text-xs text-gray-400 font-medium">Est. Total</div>
+      </div>
+      ${excluded>0 ? `<div class="ml-auto px-5 text-xs text-gray-400 italic">${excluded} cost centre${excluded!==1?'s':''} outside filter range — not shown</div>` : ''}
+    </div>`;
+
+  if (filtered.length===0) {
+    document.getElementById('cc-list').innerHTML=`<div class="bg-white rounded-xl border border-gray-200 p-14 text-center shadow-sm"><p class="text-gray-500 font-semibold">No cost centres scheduled in this period</p><p class="text-gray-400 text-sm mt-1">Try a wider date filter.</p></div>`;
+    return;
+  }
+
+  document.getElementById('cc-list').innerHTML = filtered.map(({cc, job}) => {
+    const toOrder = cc.materials.filter(m => m.qtyReq - m.qtyAssigned > 0);
+    const isCollapsed = collapsedCCs.has(cc.id);
+    const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
+    const someSel = cc.materials.some(m => selectedMaterials.has(m.id));
+
+    const matRows = cc.materials.map(mat => {
+      const qty = mat.qtyReq - mat.qtyAssigned;
+      const inCart = cart.some(i => i.materialId===mat.id);
+      const done = mat.qtyAssigned >= mat.qtyReq;
+      return `
+        <tr class="border-b border-gray-50 hover:bg-blue-50">
+          <td class="pl-12 pr-3 py-2.5">
+            <input type="checkbox" id="mat-cb-${mat.id}" class="mat-cb w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer" ${selectedMaterials.has(mat.id)?'checked':''} onchange="toggleMaterial('${mat.id}',this.checked)">
+          </td>
+          <td class="px-3 py-2.5 text-gray-800">${mat.desc}</td>
+          <td class="px-3 py-2.5 text-center text-gray-600">${mat.qtyReq}</td>
+          <td class="px-3 py-2.5 text-center ${mat.qtyAssigned>0?'text-green-600 font-semibold':'text-gray-400'}">${mat.qtyAssigned}</td>
+          <td class="px-3 py-2.5 text-center">${done?'<span class="text-green-600 font-semibold">&#10003;</span>':`<span class="font-semibold text-orange-500">${qty}</span>`}</td>
+          <td class="px-3 py-2.5 text-gray-500">${mat.supplier}</td>
+          <td class="px-3 py-2.5 text-right text-gray-600">${qty>0?'$'+(qty*mat.unitCost).toFixed(2):'—'}</td>
+          <td class="px-3 py-2.5 text-right pr-4">
+            ${done
+              ? '<span class="text-xs text-green-600">&#10003; Complete</span>'
+              : `<div class="flex items-center justify-end gap-1.5">
+                  <button onclick="assignSingle('${mat.id}','${job.id}','${cc.id}')" class="text-xs px-2 py-1 bg-green-50 border border-green-200 text-green-700 rounded hover:bg-green-100">Assign Stock</button>
+                  ${inCart
+                    ? '<span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded font-semibold">In Order &#10003;</span>'
+                    : `<button onclick="addSingle('${mat.id}','${job.id}','${cc.id}')" class="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Add to Order</button>`}
+                </div>`}
+          </td>
+        </tr>`;
+    }).join('');
+
+    return `
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-3 overflow-hidden">
+        <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border-b border-gray-200 cursor-pointer hover:bg-gray-100 select-none" onclick="toggleExpand('${cc.id}')">
+          <div onclick="event.stopPropagation()">
+            <input type="checkbox" id="cc-cb-${cc.id}" class="cc-cb w-4 h-4 rounded border-gray-400 text-blue-600 cursor-pointer" ${allSel?'checked':''} onchange="event.stopPropagation();toggleCC('${cc.id}',this.checked)">
+          </div>
+          <svg id="chev-${cc.id}" class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-150 ${isCollapsed?'':'rotate-90'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <div class="flex-1 flex items-center gap-3 min-w-0 flex-wrap">
+            <span class="font-bold text-gray-900">${cc.name}</span>
+            <span class="text-xs text-gray-400 font-mono">${cc.id}</span>
+            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${job.id}</span>
+            <span class="text-gray-500 text-sm truncate">${job.address}</span>
+          </div>
+          <div class="flex items-center gap-4 flex-shrink-0 text-xs">
+            <span class="text-gray-500 font-medium">${fmtDate(cc.scheduledDate)}</span>
+            <span class="text-gray-400">&#128100; ${job.tech}</span>
+            ${toOrder.length>0
+              ? `<span class="flex items-center gap-1 font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>${toOrder.length} to order</span>`
+              : `<span class="font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">&#10003; Complete</span>`}
+          </div>
+        </div>
+        <div id="cc-body-${cc.id}" class="${isCollapsed?'hidden':''}">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-100 bg-white">
+                <th class="pl-12 pr-3 py-2"></th>
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
+                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">Req'd</th>
+                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">Assigned</th>
+                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">To Order</th>
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase">Supplier</th>
+                <th class="px-3 py-2 text-right text-xs font-medium text-gray-400 uppercase">Est. Cost</th>
+                <th class="px-3 py-2 pr-4"></th>
+              </tr>
+            </thead>
+            <tbody>${matRows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Fix indeterminate state (can't set via HTML attr)
+  getFilteredCCs().forEach(({cc}) => {
+    const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
+    const someSel = cc.materials.some(m => selectedMaterials.has(m.id));
+    const cb = document.getElementById('cc-cb-'+cc.id);
+    if (cb) cb.indeterminate = someSel && !allSel;
+  });
+  updateSelectAllCb();
+}
+
+function toggleExpand(ccId) {
+  if (collapsedCCs.has(ccId)) { collapsedCCs.delete(ccId); } else { collapsedCCs.add(ccId); }
+  const body = document.getElementById('cc-body-'+ccId);
+  const chev = document.getElementById('chev-'+ccId);
+  if (body) body.classList.toggle('hidden', collapsedCCs.has(ccId));
+  if (chev) chev.classList.toggle('rotate-90', !collapsedCCs.has(ccId));
+}
+
+function assignSingle(matId, jobId, ccId) {
+  const r = findMat(matId); if (!r) return;
+  r.mat.qtyAssigned = r.mat.qtyReq;
+  renderCCList();
+}
+
+function addSingle(matId, jobId, ccId) {
+  if (cart.some(i => i.materialId===matId)) return;
+  const r = findMat(matId); if (!r) return;
+  const qty = r.mat.qtyReq - r.mat.qtyAssigned;
+  if (qty>0) { cart.push({materialId:matId, jobId, ccId, qty}); updateCartBadge(); renderCCList(); }
+}
+
+// ===== BULK ORDER =====
+function renderBulkOrder() {
+  const el = document.getElementById('bulk-order-content');
+  if (cart.length===0) {
+    el.innerHTML=`<div class="bg-white rounded-xl border border-gray-200 p-14 text-center shadow-sm"><div class="text-5xl mb-3">&#128230;</div><p class="text-gray-500 font-semibold">No items in order yet</p><p class="text-gray-400 text-sm mt-1">Select materials from Scheduled Cost Centres and add them to your order.</p><button onclick="navigate('ccs')" class="mt-4 text-sm text-blue-600 hover:text-blue-800 font-semibold">View Scheduled CCs &rarr;</button></div>`;
+    return;
+  }
+  const bySupplier = {};
+  cart.forEach(item => {
+    const r = findMat(item.materialId); if(!r) return;
+    if (!bySupplier[r.mat.supplier]) bySupplier[r.mat.supplier] = {email:r.mat.supplierEmail, items:[]};
+    bySupplier[r.mat.supplier].items.push({...item, mat:r.mat, job:r.job, cc:r.cc});
+  });
+  el.innerHTML = `<p class="text-sm text-gray-500 mb-4">${cart.length} item${cart.length!==1?'s':''} across ${Object.keys(bySupplier).length} supplier${Object.keys(bySupplier).length!==1?'s':''}</p>` +
+    Object.entries(bySupplier).map(([supplier, data]) => {
+      const total = data.items.reduce((s,i)=>s+i.qty*i.mat.unitCost,0);
+      return `<div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-4 overflow-hidden">
+        <div class="px-5 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+          <div><span class="font-bold text-gray-800">${supplier}</span><span class="ml-2 text-xs text-gray-400">${data.email}</span></div>
+          <div class="flex items-center gap-4"><span class="font-semibold text-gray-700">Total: $${total.toFixed(2)}</span>
+            <button onclick="showSendModal('${supplier}')" class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg">Review &amp; Send PO &rarr;</button>
+          </div>
+        </div>
+        <table class="w-full text-sm"><thead><tr class="border-b border-gray-100">
+          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
+          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Job / CC</th>
+          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Qty</th>
+          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Unit</th>
+          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Total</th>
+          <th class="px-5 py-2"></th>
+        </tr></thead><tbody>
+          ${data.items.map(i=>`<tr class="border-b border-gray-50 hover:bg-gray-50">
+            <td class="px-5 py-2.5 text-gray-800">${i.mat.desc}</td>
+            <td class="px-5 py-2.5 text-gray-500">${i.job.id} / ${i.cc.name}</td>
+            <td class="px-5 py-2.5"><input type="number" value="${i.qty}" min="1" onchange="updateCartQty('${i.materialId}',this.value)" class="w-16 border border-gray-300 rounded px-2 py-1 text-sm text-center focus:outline-none focus:border-blue-400"></td>
+            <td class="px-5 py-2.5 text-gray-500">$${i.mat.unitCost.toFixed(2)}</td>
+            <td class="px-5 py-2.5 font-semibold text-gray-800">$${(i.qty*i.mat.unitCost).toFixed(2)}</td>
+            <td class="px-5 py-2.5 text-right"><button onclick="removeFromCart('${i.materialId}')" class="text-xs text-red-400 hover:text-red-600 font-medium">Remove</button></td>
+          </tr>`).join('')}
+        </tbody></table>
+      </div>`;
+    }).join('');
+}
+
+function updateCartQty(matId, val) { const i=cart.find(x=>x.materialId===matId); if(i) i.qty=Math.max(1,parseInt(val)||1); updateCartBadge(); }
+function removeFromCart(matId) { cart=cart.filter(i=>i.materialId!==matId); updateCartBadge(); renderBulkOrder(); }
+
+// ===== SEND PO MODAL =====
+function showSendModal(supplier) {
+  const bySupplier = {};
+  cart.forEach(item => {
+    const r = findMat(item.materialId); if(!r) return;
+    if (!bySupplier[r.mat.supplier]) bySupplier[r.mat.supplier]={email:r.mat.supplierEmail,items:[]};
+    bySupplier[r.mat.supplier].items.push({...item,mat:r.mat,job:r.job,cc:r.cc});
+  });
+  const data = bySupplier[supplier]; if(!data) return;
+  const poRef = 'PO-' + poCounter;
+  const total = data.items.reduce((s,i)=>s+i.qty*i.mat.unitCost,0);
+  const todayStr = new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'long',year:'numeric'});
+  const affJobs = [...new Set(data.items.map(i=>i.jobId))];
+  const affCCs  = data.items.map(i=>({jobId:i.jobId,ccId:i.ccId,ccName:i.cc.name}));
+  const body = `Hi ${supplier} team,\n\nPlease find our purchase order below:\n\nPurchase Order: ${poRef}\nDate: ${todayStr}\nAccount: R&L Plumbing Ltd\n\nITEMS:\n${data.items.map(i=>`  - ${i.mat.desc}  Qty: ${i.qty}  Unit: $${i.mat.unitCost.toFixed(2)}  Total: $${(i.qty*i.mat.unitCost).toFixed(2)}`).join('\n')}\n\nORDER TOTAL: $${total.toFixed(2)} + GST\n\nPlease confirm receipt and advise expected delivery date.\n\nRegards,\nBilliejean\nR&L Plumbing Ltd\nprocurement@rlplumb.co.nz`;
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div><h2 class="text-lg font-bold text-gray-900">Review &amp; Send Purchase Order</h2><p class="text-sm text-gray-400 mt-0.5">${poRef} &rarr; ${supplier}</p></div>
+      <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">To</label><input value="${data.email}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
+        <div><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Subject</label><input value="Purchase Order ${poRef} – R&amp;L Plumbing Ltd" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
+      </div>
+      <div class="mb-4"><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Email Body</label><textarea rows="12" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs font-mono text-gray-700 resize-none focus:outline-none focus:border-blue-400">${body}</textarea></div>
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 text-sm text-blue-700 space-y-1.5">
+        <p class="text-xs font-bold text-blue-700 uppercase mb-2">On Send — happens automatically:</p>
+        <div class="flex gap-2"><span>&#10003;</span><span>Email sent to <strong>${supplier}</strong></span></div>
+        <div class="flex gap-2"><span>&#10003;</span><span>PO <strong>${poRef}</strong> status &rarr; <strong>Sent</strong> in SimPro</span></div>
+        ${affJobs.map(jId=>`<div class="flex gap-2"><span>&#10003;</span><span>Note added to Job <strong>${jId}</strong> in SimPro</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2"><span>&#10003;</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> (${c.jobId}) in SimPro + Monday.com</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2"><span>&#10003;</span><span>Task <strong>${c.ccId}</strong> closed (PO sent trigger)</span></div>`).join('')}
+      </div>
+      <div class="flex justify-end gap-3">
+        <button onclick="closeModal()" class="text-sm px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancel</button>
+        <button onclick="sendPO('${supplier}','${poRef}')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold">Send Order &rarr;</button>
+      </div>
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+
+function sendPO(supplier, poRef) {
+  const bySupplier = {};
+  cart.forEach(item => {
+    const r=findMat(item.materialId); if(!r) return;
+    if(!bySupplier[r.mat.supplier]) bySupplier[r.mat.supplier]={items:[]};
+    bySupplier[r.mat.supplier].items.push({...item,mat:r.mat,job:r.job,cc:r.cc});
+  });
+  const data = bySupplier[supplier]; if(!data) return;
+  const now = new Date();
+  const ts = now.toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-NZ',{hour:'2-digit',minute:'2-digit'});
+  const affJobs=[...new Set(data.items.map(i=>i.jobId))];
+  const affCCs=data.items.map(i=>({jobId:i.jobId,ccId:i.ccId,ccName:i.cc.name}));
+  affJobs.forEach(jId => { const job=jobs.find(j=>j.id===jId); if(job) job.notes.push({id:'n'+Date.now()+jId, text:`${poRef} sent to ${supplier}. Raised by Billiejean. ${ts}.`, author:'System', timestamp:ts, type:'auto'}); });
+  const sentIds = data.items.map(i=>i.materialId);
+  cart = cart.filter(i=>!sentIds.includes(i.materialId));
+  poCounter++; updateCartBadge();
+  document.getElementById('modal-content').innerHTML = `
+    <div class="p-10 text-center">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><svg class="w-9 h-9 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div>
+      <h2 class="text-xl font-extrabold text-gray-900 mb-1">Order Sent!</h2>
+      <p class="text-gray-400 text-sm mb-6">${poRef} sent to ${supplier}</p>
+      <div class="text-left bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6 space-y-2 text-sm">
+        <div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Email sent to <strong>${supplier}</strong></span></div>
+        <div class="flex gap-2 text-green-700"><span>&#9989;</span><span>PO <strong>${poRef}</strong> &rarr; <strong>Sent</strong> in SimPro</span></div>
+        ${affJobs.map(jId=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Note added to Job <strong>${jId}</strong></span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> in SimPro + Monday.com</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Task <strong>${c.ccId}</strong> closed</span></div>`).join('')}
+      </div>
+      <div class="flex justify-center gap-3">
+        <button onclick="closeModal();navigate('ccs')" class="text-sm px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Back to Cost Centres</button>
+        <button onclick="closeModal();navigate('bulk-order')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">Continue Ordering</button>
+      </div>
+    </div>`;
+}
+
+// ===== INIT =====
+document.getElementById('today-display').textContent = TODAY.toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+navigate('ccs');
+</script>
+</body>
+</html>

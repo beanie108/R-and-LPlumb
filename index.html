@@ -237,7 +237,7 @@ function daysFromNow(n) { const d = new Date(TODAY); d.setDate(d.getDate()+n); r
 
 const jobs = [
   {
-    id:'J-2847', address:'123 Rosehill Drive, Papakura', tech:'Ryan T.', status:'Pending', notes:[],
+    id:'J-2847', name:'Rosehill Drive – Bathroom & HWC', address:'123 Rosehill Drive, Papakura', tech:'Ryan T.', status:'Pending', notes:[],
     costCentres:[
       { id:'CC-001', name:'Bathroom', scheduledDate:daysFromNow(1), materials:[
         {id:'m1', partNo:'PL-001', desc:'40mm P-Trap',          qtyReq:2, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:8.50},
@@ -251,7 +251,7 @@ const jobs = [
     ]
   },
   {
-    id:'J-2851', address:'45 Great South Rd, Manurewa', tech:'Steve K.', status:'Pending', notes:[],
+    id:'J-2851', name:'Great South Road – Rough-In', address:'45 Great South Rd, Manurewa', tech:'Steve K.', status:'Pending', notes:[],
     costCentres:[
       { id:'CC-003', name:'Rough-In', scheduledDate:daysFromNow(3), materials:[
         {id:'m6', partNo:'PL-008', desc:'100mm Soil Pipe 6m',      qtyReq:4, qtyAssigned:0, supplier:'Reece',         supplierEmail:'orders@reece.co.nz',         unitCost:38.00},
@@ -261,7 +261,7 @@ const jobs = [
     ]
   },
   {
-    id:'J-2863', address:'8 Cavendish Drive, Manukau', tech:'Ben M.', status:'In Progress', notes:[],
+    id:'J-2863', name:'Cavendish Drive – Commercial Fit-Out', address:'8 Cavendish Drive, Manukau', tech:'Ben M.', status:'In Progress', notes:[],
     costCentres:[
       { id:'CC-004', name:'Toilets', scheduledDate:daysFromNow(4), materials:[
         {id:'m9',  partNo:'PL-018', desc:'Close Coupled Suite', qtyReq:3, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:425.00},
@@ -704,7 +704,34 @@ function toggleSelectAll(checked) {
   getAllFilteredMatIds().forEach(id => checked ? selectedMaterials.add(id) : selectedMaterials.delete(id));
   document.querySelectorAll('.mat-cb').forEach(cb => cb.checked = checked);
   document.querySelectorAll('.cc-cb').forEach(cb => { cb.checked = checked; cb.indeterminate = false; });
+  document.querySelectorAll('.job-cb').forEach(cb => { cb.checked = checked; cb.indeterminate = false; });
   updateStickyFooter();
+}
+
+function toggleJob(jobId, checked) {
+  const filteredForJob = getFilteredCCs().filter(({job}) => job.id === jobId);
+  filteredForJob.forEach(({cc}) => {
+    cc.materials.forEach(mat => {
+      checked ? selectedMaterials.add(mat.id) : selectedMaterials.delete(mat.id);
+      const cb = document.getElementById('mat-cb-'+mat.id);
+      if (cb) cb.checked = checked;
+    });
+    const ccCb = document.getElementById('cc-cb-'+cc.id);
+    if (ccCb) { ccCb.checked = checked; ccCb.indeterminate = false; }
+  });
+  const jobCb = document.getElementById('job-cb-'+jobId);
+  if (jobCb) { jobCb.checked = checked; jobCb.indeterminate = false; }
+  updateSelectAllCb();
+  updateStickyFooter();
+}
+
+function updateJobCb(jobId) {
+  const filteredForJob = getFilteredCCs().filter(({job}) => job.id === jobId);
+  const mats = filteredForJob.flatMap(({cc}) => cc.materials);
+  const allSel = mats.length > 0 && mats.every(m => selectedMaterials.has(m.id));
+  const someSel = mats.some(m => selectedMaterials.has(m.id));
+  const cb = document.getElementById('job-cb-'+jobId);
+  if (cb) { cb.checked = allSel; cb.indeterminate = someSel && !allSel; }
 }
 
 function toggleCC(ccId, checked) {
@@ -717,6 +744,7 @@ function toggleCC(ccId, checked) {
   });
   const ccCb = document.getElementById('cc-cb-'+ccId);
   if (ccCb) { ccCb.checked = checked; ccCb.indeterminate = false; }
+  updateJobCb(row.job.id);
   updateSelectAllCb();
   updateStickyFooter();
 }
@@ -728,6 +756,7 @@ function toggleMaterial(matId, checked) {
   const someSel = r.cc.materials.some(m => selectedMaterials.has(m.id));
   const ccCb = document.getElementById('cc-cb-'+r.cc.id);
   if (ccCb) { ccCb.checked = allSel; ccCb.indeterminate = someSel && !allSel; }
+  updateJobCb(r.job.id);
   updateSelectAllCb();
   updateStickyFooter();
 }
@@ -1009,22 +1038,35 @@ function renderCCList() {
         </div>`;
     }).join('');
 
+    const jobAllSel = ccs.flatMap(cc=>cc.materials).every(m=>selectedMaterials.has(m.id));
+    const jobSomeSel = ccs.flatMap(cc=>cc.materials).some(m=>selectedMaterials.has(m.id));
     return `
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
         <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center gap-3 flex-wrap">
+          <div onclick="event.stopPropagation()">
+            <input type="checkbox" id="job-cb-${job.id}" class="job-cb w-4 h-4 rounded border-slate-400 text-blue-600 cursor-pointer" ${jobAllSel?'checked':''} onchange="event.stopPropagation();toggleJob('${job.id}',this.checked)">
+          </div>
           <span class="font-bold text-blue-600 text-sm">${job.id} <em class="font-normal text-[10px] text-slate-300">(.id)</em></span>
+          <span class="font-bold text-slate-800 text-sm">${job.name} <em class="font-normal text-[10px] text-slate-300">(.name)</em></span>
           <span class="text-slate-300 text-xs">·</span>
-          <span class="text-slate-700 font-medium text-sm">${job.address} <em class="font-normal text-[10px] text-slate-300">(.site.address)</em></span>
+          <span class="text-slate-500 text-xs">${job.address} <em class="text-[10px] text-slate-300">(.site.address)</em></span>
         </div>
         ${ccHtml}
       </div>`;
   }).join('');
 
-  // Fix indeterminate state
+  // Fix indeterminate state for CC and job checkboxes
   getFilteredCCs().forEach(({cc}) => {
     const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
     const someSel = cc.materials.some(m => selectedMaterials.has(m.id));
     const cb = document.getElementById('cc-cb-'+cc.id);
+    if (cb) cb.indeterminate = someSel && !allSel;
+  });
+  groups.forEach(({job, ccs}) => {
+    const mats = ccs.flatMap(cc => cc.materials);
+    const allSel = mats.length > 0 && mats.every(m => selectedMaterials.has(m.id));
+    const someSel = mats.some(m => selectedMaterials.has(m.id));
+    const cb = document.getElementById('job-cb-'+job.id);
     if (cb) cb.indeterminate = someSel && !allSel;
   });
   updateSelectAllCb();

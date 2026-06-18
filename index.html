@@ -946,6 +946,7 @@ function renderCCList() {
             </td>
             <td class="px-2 py-1.5 font-mono text-slate-400">${mat.partNo||'—'}</td>
             <td class="px-2 py-1.5 text-slate-800">${mat.desc}</td>
+            <td class="px-2 py-1.5 text-slate-500">${mat.supplier}</td>
             <td class="px-2 py-1.5 text-center text-slate-700 font-medium">${mat.qtyReq}</td>
             <td class="px-2 py-1.5 text-center ${mat.qtyAssigned>0?'text-emerald-600 font-semibold':'text-slate-400'}">${mat.qtyAssigned}</td>
             <td class="px-2 py-1.5 text-center">${done?'<span class="text-emerald-600 font-semibold">0 ✓</span>':`<span class="font-bold text-orange-500">${qtyUnalloc}</span>`}</td>
@@ -991,6 +992,7 @@ function renderCCList() {
                     <th class="pl-8 pr-2 py-1.5 w-8"></th>
                     <th class="px-2 py-1.5 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Part # <em class="font-normal text-slate-300 normal-case tracking-normal">(.partNo)</em></th>
                     <th class="px-2 py-1.5 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Item <em class="font-normal text-slate-300 normal-case tracking-normal">(.catalogue.name)</em></th>
+                    <th class="px-2 py-1.5 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Supplier <em class="font-normal text-slate-300 normal-case tracking-normal">(.supplier.name)</em></th>
                     <th class="px-2 py-1.5 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Req'd <em class="font-normal text-slate-300 normal-case tracking-normal">(.quantity)</em></th>
                     <th class="px-2 py-1.5 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Assigned</th>
                     <th class="px-2 py-1.5 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Unalloc.</th>

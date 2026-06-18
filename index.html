@@ -3,103 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>R&L Plumb | Procurement Portal</title>
+  <title>R&amp;L Plumb | Procurement Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 text-sm">
-<div class="flex h-screen overflow-hidden">
+<body class="bg-slate-50 font-sans text-slate-800 text-sm antialiased">
+
+<!-- ======= LOGIN SCREEN ======= -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <span class="text-white font-extrabold text-xl">RL</span>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-900">R&amp;L Plumb</h1>
+      <p class="text-slate-400 text-sm mt-1">Procurement Portal</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+      <div id="login-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 text-center">
+        Incorrect username or password
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="mb-4">
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="lu">Username</label>
+          <input id="lu" type="text" autocomplete="username" placeholder="Username"
+            class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+        </div>
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="lp">Password</label>
+          <input id="lp" type="password" autocomplete="current-password" placeholder="Password"
+            class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
+          Sign In
+        </button>
+      </form>
+    </div>
+    <p class="text-center text-xs text-slate-400 mt-6">R&amp;L Plumbing Ltd &copy; 2026</p>
+  </div>
+</div>
+
+<!-- ======= APP ======= -->
+<div id="app" class="hidden flex h-screen overflow-hidden">
 
   <!-- SIDEBAR -->
-  <aside class="w-56 bg-[#0f2d4a] text-white flex flex-col flex-shrink-0">
-    <div class="px-5 py-4 border-b border-[#1a3d5c]">
+  <aside class="w-60 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
+    <div class="px-4 py-4 border-b border-slate-200">
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 bg-yellow-400 rounded-lg flex items-center justify-center flex-shrink-0">
-          <span class="text-[#0f2d4a] font-extrabold text-sm">RL</span>
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-extrabold text-xs">RL</span>
         </div>
         <div>
-          <div class="font-bold text-white leading-tight">R&amp;L Plumb</div>
-          <div class="text-xs text-blue-300">Procurement Portal</div>
+          <div class="font-bold text-slate-900 text-sm leading-tight">R&amp;L Plumb</div>
+          <div class="text-xs text-slate-400">Procurement Portal</div>
         </div>
       </div>
     </div>
-    <nav class="flex-1 px-3 py-4 space-y-1">
-      <button onclick="navigate('ccs')" id="nav-ccs" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium bg-blue-700 text-white text-sm">
+    <nav class="flex-1 px-3 py-3 space-y-0.5">
+      <button onclick="navigate('ccs')" id="nav-ccs" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
         Scheduled CCs
       </button>
-      <button onclick="navigate('pos')" id="nav-pos" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-blue-200 hover:bg-[#1a3d5c] hover:text-white text-sm">
+      <button onclick="navigate('pos')" id="nav-pos" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         Purchase Orders
       </button>
-      <button onclick="navigate('stock')" id="nav-stock" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-blue-200 hover:bg-[#1a3d5c] hover:text-white text-sm">
+      <button onclick="navigate('stock')" id="nav-stock" class="nav-item w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
         Stock
       </button>
     </nav>
-    <div class="px-4 py-3 border-t border-[#1a3d5c]">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">BJ</div>
+    <div class="px-4 py-4 border-t border-slate-200">
+      <div class="flex items-center gap-2.5 mb-3">
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold flex-shrink-0">BJ</div>
         <div>
-          <div class="text-white text-xs font-semibold leading-tight">Billiejean</div>
-          <div class="text-blue-400 text-xs">Procurement</div>
+          <div class="text-slate-800 text-sm font-semibold leading-tight">Billiejean</div>
+          <div class="text-slate-400 text-xs">Procurement</div>
         </div>
       </div>
+      <button onclick="logout()" class="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-700 w-full py-1 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Sign out
+      </button>
     </div>
   </aside>
 
   <!-- MAIN -->
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-    <!-- Top bar -->
-    <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
-      <div id="breadcrumb" class="text-sm text-gray-500 font-medium">Scheduled Cost Centres</div>
+    <!-- Topbar -->
+    <header class="bg-white border-b border-slate-200 px-6 h-14 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-slate-400">Portal</span>
+        <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+        <span id="breadcrumb" class="font-semibold text-slate-700">Scheduled Cost Centres</span>
+      </div>
       <div class="flex items-center gap-4">
-        <div class="flex items-center gap-3 text-xs text-gray-400">
-          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-400 rounded-full"></span>SimPro</span>
-          <span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-400 rounded-full"></span>Monday.com</span>
+        <div class="flex items-center gap-3 text-xs text-slate-400">
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>SimPro</span>
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>Monday.com</span>
         </div>
-        <button onclick="navigate('bulk-order')" class="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-[#0f2d4a] font-bold text-sm px-3.5 py-2 rounded-lg">
+        <button onclick="navigate('bulk-order')" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-3.5 py-2 rounded-lg transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Order <span id="cart-badge" class="bg-[#0f2d4a] text-yellow-400 text-xs font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+          Order
+          <span id="cart-badge" class="bg-white text-blue-600 text-xs font-extrabold w-5 h-5 rounded-full flex items-center justify-center leading-none">0</span>
         </button>
       </div>
     </header>
 
-    <main class="flex-1 overflow-auto">
+    <main class="flex-1 overflow-auto bg-slate-50">
 
-      <!-- VIEW: Scheduled Cost Centres (PRIMARY) -->
+      <!-- VIEW: Scheduled Cost Centres -->
       <div id="view-ccs" class="p-6 pb-28">
-        <div class="flex items-center justify-between mb-4">
-          <h1 class="text-xl font-extrabold text-gray-900">Scheduled Cost Centres – Materials Required</h1>
-          <span class="text-xs text-gray-400">Today: <span id="today-display"></span></span>
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-bold text-slate-900">Scheduled Cost Centres</h1>
+            <p class="text-xs text-slate-400 mt-0.5">Today: <span id="today-display"></span> <em class="text-slate-300 ml-1">(GET /jobs/ · /jobs/{id}/sections/)</em></p>
+          </div>
         </div>
 
-        <!-- Filter -->
-        <div class="flex items-center flex-wrap gap-2 mb-2">
-          <span class="text-xs font-semibold text-gray-500 uppercase mr-1">Show:</span>
-          <button onclick="setFilter(3)"  id="filter-3"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Next 3 Days</button>
-          <button onclick="setFilter(5)"  id="filter-5"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 5 Days</button>
-          <button onclick="setFilter(7)"  id="filter-7"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 7 Days</button>
-          <button onclick="setFilter(14)" id="filter-14"   class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 14 Days</button>
-          <button onclick="setFilter(99)" id="filter-99"   class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All Upcoming</button>
-          <button onclick="setFilter('custom')" id="filter-custom" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Custom</button>
+        <div class="flex items-center flex-wrap gap-2 mb-3">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide mr-1">Show:</span>
+          <button onclick="setFilter(3)"  id="filter-3"    class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white">Next 3 Days</button>
+          <button onclick="setFilter(5)"  id="filter-5"    class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Next 5 Days</button>
+          <button onclick="setFilter(7)"  id="filter-7"    class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Next 7 Days</button>
+          <button onclick="setFilter(14)" id="filter-14"   class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Next 14 Days</button>
+          <button onclick="setFilter(99)" id="filter-99"   class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">All Upcoming</button>
+          <button onclick="setFilter('custom')" id="filter-custom" class="filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Custom</button>
         </div>
-        <!-- Custom date range (shown only when Custom selected) -->
-        <div id="custom-date-row" class="hidden flex items-center gap-2 mb-3 pl-1">
-          <span class="text-xs text-gray-500 font-medium">From</span>
-          <input type="date" id="custom-from" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
-          <span class="text-xs text-gray-500 font-medium">To</span>
-          <input type="date" id="custom-to"   class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
-          <button onclick="applyCustomFilter()" class="px-4 py-1.5 bg-[#0f2d4a] text-white text-sm font-semibold rounded-lg hover:bg-blue-900">Apply</button>
+        <div id="custom-date-row" class="hidden flex items-center gap-2 mb-4">
+          <span class="text-xs text-slate-500 font-medium">From</span>
+          <input type="date" id="custom-from" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
+          <span class="text-xs text-slate-500 font-medium">To</span>
+          <input type="date" id="custom-to" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
+          <button onclick="applyCustomFilter()" class="px-3.5 py-1.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700">Apply</button>
         </div>
 
-        <!-- Summary -->
-        <div id="summary-bar" class="mb-4"></div>
+        <div id="summary-bar" class="mb-5"></div>
 
-        <!-- Select all -->
-        <div class="flex items-center gap-3 px-1 mb-2">
-          <input type="checkbox" id="select-all-cb" onchange="toggleSelectAll(this.checked)" class="w-4 h-4 rounded border-gray-400 text-blue-600 cursor-pointer">
-          <label for="select-all-cb" class="text-xs font-semibold text-gray-500 uppercase cursor-pointer select-none">Select All</label>
+        <div class="flex items-center gap-3 mb-3 px-1">
+          <input type="checkbox" id="select-all-cb" onchange="toggleSelectAll(this.checked)" class="w-4 h-4 rounded border-slate-400 text-blue-600 cursor-pointer">
+          <label for="select-all-cb" class="text-xs font-semibold text-slate-400 uppercase tracking-wide cursor-pointer select-none">Select All</label>
         </div>
 
         <div id="cc-list"></div>
@@ -108,11 +151,11 @@
       <!-- VIEW: Bulk Order -->
       <div id="view-bulk-order" class="p-6 hidden">
         <div class="flex items-center gap-3 mb-5">
-          <button onclick="navigate('ccs')" class="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
+          <button onclick="navigate('ccs')" class="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Back
           </button>
-          <h1 class="text-xl font-bold text-gray-900">Bulk Order</h1>
+          <h1 class="text-xl font-bold text-slate-900">Bulk Order</h1>
         </div>
         <div id="bulk-order-content"></div>
       </div>
@@ -120,14 +163,13 @@
       <!-- VIEW: Purchase Orders -->
       <div id="view-pos" class="p-6 hidden">
         <div class="flex items-center justify-between mb-5">
-          <h1 class="text-xl font-extrabold text-gray-900">Purchase Orders</h1>
-          <span class="text-xs text-gray-400 italic">Synced from SimPro</span>
+          <h1 class="text-xl font-bold text-slate-900">Purchase Orders</h1>
+          <span class="text-xs text-slate-400 italic">Synced from SimPro <em class="text-slate-300">(GET /purchaseOrders/)</em></span>
         </div>
-        <!-- PO Status filter -->
         <div class="flex items-center gap-2 mb-5">
-          <button onclick="setPOFilter('pending')"   id="po-filter-pending"   class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Pending</button>
-          <button onclick="setPOFilter('received')"  id="po-filter-received"  class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Received</button>
-          <button onclick="setPOFilter('completed')" id="po-filter-completed" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Completed</button>
+          <button onclick="setPOFilter('pending')"   id="po-filter-pending"   class="po-filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white">Pending</button>
+          <button onclick="setPOFilter('received')"  id="po-filter-received"  class="po-filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Received</button>
+          <button onclick="setPOFilter('completed')" id="po-filter-completed" class="po-filter-btn px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50">Completed</button>
         </div>
         <div id="po-summary" class="mb-4"></div>
         <div id="po-list"></div>
@@ -136,21 +178,21 @@
       <!-- VIEW: Stock -->
       <div id="view-stock" class="p-6 hidden">
         <div class="flex items-center justify-between mb-5">
-          <h1 class="text-xl font-extrabold text-gray-900">Stock – Storage Devices</h1>
-          <span class="text-xs text-gray-400 italic">Synced from SimPro</span>
+          <h1 class="text-xl font-bold text-slate-900">Stock – Storage Devices</h1>
+          <span class="text-xs text-slate-400 italic">Synced from SimPro <em class="text-slate-300">(GET /inventory/storageDevices/)</em></span>
         </div>
         <div id="storage-list"></div>
       </div>
 
     </main>
   </div>
-</div>
+</div><!-- end #app -->
 
-<!-- STICKY FOOTER (selection actions) -->
-<div id="selection-footer" class="hidden fixed bottom-0 bg-white border-t-2 border-blue-600 px-6 py-3 flex items-center justify-between shadow-xl z-40" style="left:224px;right:0">
-  <span id="selection-summary" class="text-sm font-semibold text-gray-700"></span>
+<!-- STICKY FOOTER -->
+<div id="selection-footer" class="hidden fixed bottom-0 bg-white border-t border-slate-200 px-6 py-3 flex items-center justify-between shadow-lg z-40" style="left:240px;right:0">
+  <span id="selection-summary" class="text-sm font-semibold text-slate-700"></span>
   <div class="flex gap-3">
-    <button onclick="batchAssignStock()" class="flex items-center gap-2 text-sm px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg">
+    <button onclick="batchAssignStock()" class="flex items-center gap-2 text-sm px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
       Assign from Stock
     </button>
@@ -162,21 +204,40 @@
 </div>
 
 <!-- MODAL -->
-<div id="modal-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="handleOverlayClick(event)">
-  <div id="modal-box" class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-auto shadow-2xl">
+<div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onclick="handleOverlayClick(event)">
+  <div id="modal-box" class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-auto shadow-2xl">
     <div id="modal-content"></div>
   </div>
 </div>
 
 <script>
+// ===== AUTH =====
+function handleLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  if (u === 'yeti' && p === 'yeti') {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    navigate('ccs');
+  } else {
+    document.getElementById('login-error').classList.remove('hidden');
+  }
+}
+function logout() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('lp').value = '';
+  document.getElementById('login-error').classList.add('hidden');
+}
+
 // ===== DATA =====
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 function daysFromNow(n) { const d = new Date(TODAY); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; }
 
 const jobs = [
   {
-    id:'J-2847', address:'123 Rosehill Drive, Papakura', tech:'Ryan T.', status:'Pending',
-    notes:[],
+    id:'J-2847', address:'123 Rosehill Drive, Papakura', tech:'Ryan T.', status:'Pending', notes:[],
     costCentres:[
       { id:'CC-001', name:'Bathroom', scheduledDate:daysFromNow(1), materials:[
         {id:'m1', desc:'40mm P-Trap',          qtyReq:2, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:8.50},
@@ -190,8 +251,7 @@ const jobs = [
     ]
   },
   {
-    id:'J-2851', address:'45 Great South Rd, Manurewa', tech:'Steve K.', status:'Pending',
-    notes:[],
+    id:'J-2851', address:'45 Great South Rd, Manurewa', tech:'Steve K.', status:'Pending', notes:[],
     costCentres:[
       { id:'CC-003', name:'Rough-In', scheduledDate:daysFromNow(3), materials:[
         {id:'m6', desc:'100mm Soil Pipe 6m',      qtyReq:4, qtyAssigned:0, supplier:'Reece',         supplierEmail:'orders@reece.co.nz',         unitCost:38.00},
@@ -201,8 +261,7 @@ const jobs = [
     ]
   },
   {
-    id:'J-2863', address:'8 Cavendish Drive, Manukau', tech:'Ben M.', status:'In Progress',
-    notes:[],
+    id:'J-2863', address:'8 Cavendish Drive, Manukau', tech:'Ben M.', status:'In Progress', notes:[],
     costCentres:[
       { id:'CC-004', name:'Toilets', scheduledDate:daysFromNow(4), materials:[
         {id:'m9',  desc:'Close Coupled Suite', qtyReq:3, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:425.00},
@@ -212,7 +271,6 @@ const jobs = [
         {id:'m11', desc:'Caroma Hand Basin 400mm', qtyReq:4, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:195.00},
         {id:'m12', desc:'Basin Mixer Tap',          qtyReq:4, qtyAssigned:0, supplier:'Tradelink',      supplierEmail:'trade@tradelink.co.nz',      unitCost:145.00},
       ]},
-      // CC-006 is 8 days out — will NOT appear in 7-day filter, even though CC-004/005 for same job do
       { id:'CC-006', name:'Hot Water', scheduledDate:daysFromNow(8), materials:[
         {id:'m13', desc:'300L Commercial HWC', qtyReq:1, qtyAssigned:0, supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', unitCost:1850.00},
       ]},
@@ -220,88 +278,86 @@ const jobs = [
   }
 ];
 
-// ===== PURCHASE ORDERS DATA =====
 const purchaseOrders = [
   { id:'PO-0995', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-10', sentDate:'2026-06-11', status:'Sent',
     jobId:'J-2847', ccId:'CC-001', ccName:'Bathroom',
-    items:[{desc:'40mm P-Trap', qty:10, unitCost:8.50},{desc:'Cistern Fill Valve', qty:6, unitCost:18.00},{desc:'Tapware Set – Chrome', qty:2, unitCost:185.00},{desc:'Expansion Valve 350kPa', qty:3, unitCost:45.00}]},
+    items:[{desc:'40mm P-Trap',qty:10,unitCost:8.50},{desc:'Cistern Fill Valve',qty:6,unitCost:18.00},{desc:'Tapware Set – Chrome',qty:2,unitCost:185.00},{desc:'Expansion Valve 350kPa',qty:3,unitCost:45.00}]},
   { id:'PO-0997', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-12', sentDate:'2026-06-13', status:'Partially Received',
     jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
-    items:[{desc:'100mm Soil Pipe 6m', qty:8, unitCost:38.00},{desc:'Inspection Opening 100mm', qty:4, unitCost:22.00}]},
+    items:[{desc:'100mm Soil Pipe 6m',qty:8,unitCost:38.00},{desc:'Inspection Opening 100mm',qty:4,unitCost:22.00}]},
   { id:'PO-0999', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-06-15', sentDate:'2026-06-16', status:'Sent',
     jobId:'J-2863', ccId:'CC-005', ccName:'Basins',
-    items:[{desc:'15mm Copper Pipe 3m', qty:12, unitCost:24.00},{desc:'Basin Mixer Tap', qty:4, unitCost:145.00},{desc:'22mm Gate Valve', qty:6, unitCost:32.00}]},
+    items:[{desc:'15mm Copper Pipe 3m',qty:12,unitCost:24.00},{desc:'Basin Mixer Tap',qty:4,unitCost:145.00},{desc:'22mm Gate Valve',qty:6,unitCost:32.00}]},
   { id:'PO-1000', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-17', sentDate:'2026-06-17', status:'Sent',
     jobId:'J-2847', ccId:'CC-002', ccName:'Hot Water Cylinder',
-    items:[{desc:'180L Hot Water Cylinder', qty:2, unitCost:895.00},{desc:'Expansion Valve 350kPa', qty:2, unitCost:45.00}]},
+    items:[{desc:'180L Hot Water Cylinder',qty:2,unitCost:895.00},{desc:'Expansion Valve 350kPa',qty:2,unitCost:45.00}]},
   { id:'PO-0993', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-05', sentDate:'2026-06-06', status:'Received',
     jobId:'J-2863', ccId:'CC-004', ccName:'Toilets',
-    items:[{desc:'Close Coupled Suite', qty:3, unitCost:425.00},{desc:'40mm P-Trap', qty:20, unitCost:8.50}]},
+    items:[{desc:'Close Coupled Suite',qty:3,unitCost:425.00},{desc:'40mm P-Trap',qty:20,unitCost:8.50}]},
   { id:'PO-0990', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-01', sentDate:'2026-06-02', status:'Received',
     jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
-    items:[{desc:'90mm Soil Bend 45°', qty:10, unitCost:12.50},{desc:'40mm Waste Pipe 6m', qty:6, unitCost:29.00}]},
+    items:[{desc:'90mm Soil Bend 45°',qty:10,unitCost:12.50},{desc:'40mm Waste Pipe 6m',qty:6,unitCost:29.00}]},
   { id:'PO-0985', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-05-20', sentDate:'2026-05-21', status:'Completed',
     jobId:'J-2863', ccId:'CC-004', ccName:'Toilets',
-    items:[{desc:'Close Coupled Suite', qty:2, unitCost:425.00},{desc:'Cistern Fill Valve', qty:4, unitCost:18.00},{desc:'15mm Isolating Valve', qty:6, unitCost:14.00}]},
+    items:[{desc:'Close Coupled Suite',qty:2,unitCost:425.00},{desc:'Cistern Fill Valve',qty:4,unitCost:18.00},{desc:'15mm Isolating Valve',qty:6,unitCost:14.00}]},
   { id:'PO-0982', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-05-15', sentDate:'2026-05-16', status:'Completed',
     jobId:'J-2863', ccId:'CC-005', ccName:'Basins',
-    items:[{desc:'Basin Mixer Tap', qty:4, unitCost:145.00},{desc:'15mm Copper Pipe 3m', qty:10, unitCost:24.00}]},
+    items:[{desc:'Basin Mixer Tap',qty:4,unitCost:145.00},{desc:'15mm Copper Pipe 3m',qty:10,unitCost:24.00}]},
   { id:'PO-0979', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-05-10', sentDate:'2026-05-11', status:'Completed',
     jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
-    items:[{desc:'100mm Soil Pipe 6m', qty:6, unitCost:38.00},{desc:'Inspection Opening 100mm', qty:4, unitCost:22.00},{desc:'90mm Soil Bend 45°', qty:8, unitCost:12.50}]},
+    items:[{desc:'100mm Soil Pipe 6m',qty:6,unitCost:38.00},{desc:'Inspection Opening 100mm',qty:4,unitCost:22.00},{desc:'90mm Soil Bend 45°',qty:8,unitCost:12.50}]},
   { id:'PO-0998', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-14', sentDate:'2026-06-14', status:'Sent',
     jobId:null, ccId:null, ccName:null,
-    items:[{desc:'40mm P-Trap', qty:30, unitCost:8.50},{desc:'15mm Isolating Valve', qty:15, unitCost:14.00},{desc:'Cistern Fill Valve', qty:20, unitCost:18.00}]},
+    items:[{desc:'40mm P-Trap',qty:30,unitCost:8.50},{desc:'15mm Isolating Valve',qty:15,unitCost:14.00},{desc:'Cistern Fill Valve',qty:20,unitCost:18.00}]},
   { id:'PO-0988', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-06-03', sentDate:'2026-06-04', status:'Received',
     jobId:null, ccId:null, ccName:null,
-    items:[{desc:'15mm Copper Pipe 3m', qty:20, unitCost:24.00},{desc:'22mm Compression Elbow', qty:25, unitCost:6.50},{desc:'15mm Copper Elbow', qty:30, unitCost:4.20}]},
+    items:[{desc:'15mm Copper Pipe 3m',qty:20,unitCost:24.00},{desc:'22mm Compression Elbow',qty:25,unitCost:6.50},{desc:'15mm Copper Elbow',qty:30,unitCost:4.20}]},
 ];
 
-// ===== STORAGE DEVICES DATA =====
 const storageDevices = [
-  { id:'SD-001', name:'Workshop Shelving A', type:'Warehouse', location:'Henderson Depot', icon:'🏭',
+  { id:'SD-001', name:'Workshop Shelving A', location:'Henderson Depot', icon:'🏭',
     parts:[
-      {partNo:'PL-001', desc:'40mm P-Trap',              qty:15, unit:'ea',   unitCost:8.50},
-      {partNo:'PL-002', desc:'15mm Copper Pipe 3m',       qty:8,  unit:'ea',   unitCost:24.00},
-      {partNo:'PL-003', desc:'Cistern Fill Valve',        qty:12, unit:'ea',   unitCost:18.00},
-      {partNo:'PL-004', desc:'Expansion Valve 350kPa',    qty:4,  unit:'ea',   unitCost:45.00},
-      {partNo:'PL-005', desc:'22mm Compression Elbow',    qty:20, unit:'ea',   unitCost:6.50},
-      {partNo:'PL-006', desc:'15mm Isolating Valve',      qty:10, unit:'ea',   unitCost:14.00},
-      {partNo:'PL-007', desc:'Silicone Sealant White',    qty:8,  unit:'tube', unitCost:12.00},
+      {partNo:'PL-001', desc:'40mm P-Trap',           qty:15, unit:'ea',   unitCost:8.50},
+      {partNo:'PL-002', desc:'15mm Copper Pipe 3m',    qty:8,  unit:'ea',   unitCost:24.00},
+      {partNo:'PL-003', desc:'Cistern Fill Valve',     qty:12, unit:'ea',   unitCost:18.00},
+      {partNo:'PL-004', desc:'Expansion Valve 350kPa', qty:4,  unit:'ea',   unitCost:45.00},
+      {partNo:'PL-005', desc:'22mm Compression Elbow', qty:20, unit:'ea',   unitCost:6.50},
+      {partNo:'PL-006', desc:'15mm Isolating Valve',   qty:10, unit:'ea',   unitCost:14.00},
+      {partNo:'PL-007', desc:'Silicone Sealant White', qty:8,  unit:'tube', unitCost:12.00},
     ]},
-  { id:'SD-002', name:'Workshop Shelving B', type:'Warehouse', location:'Henderson Depot', icon:'🏭',
+  { id:'SD-002', name:'Workshop Shelving B', location:'Henderson Depot', icon:'🏭',
     parts:[
-      {partNo:'PL-008', desc:'100mm Soil Pipe 6m',        qty:3,  unit:'ea',   unitCost:38.00},
-      {partNo:'PL-009', desc:'Inspection Opening 100mm',  qty:6,  unit:'ea',   unitCost:22.00},
-      {partNo:'PL-010', desc:'40mm Waste Pipe 6m',        qty:5,  unit:'ea',   unitCost:29.00},
-      {partNo:'PL-011', desc:'90mm Soil Bend 45°',        qty:8,  unit:'ea',   unitCost:12.50},
-      {partNo:'PL-012', desc:'15mm Compression Tee',      qty:14, unit:'ea',   unitCost:7.80},
+      {partNo:'PL-008', desc:'100mm Soil Pipe 6m',       qty:3,  unit:'ea', unitCost:38.00},
+      {partNo:'PL-009', desc:'Inspection Opening 100mm', qty:6,  unit:'ea', unitCost:22.00},
+      {partNo:'PL-010', desc:'40mm Waste Pipe 6m',       qty:5,  unit:'ea', unitCost:29.00},
+      {partNo:'PL-011', desc:'90mm Soil Bend 45°',  qty:8,  unit:'ea', unitCost:12.50},
+      {partNo:'PL-012', desc:'15mm Compression Tee',     qty:14, unit:'ea', unitCost:7.80},
     ]},
-  { id:'SD-003', name:'Ryan T. – Van', type:'Vehicle', location:'Van · ABC-123', icon:'🚐',
+  { id:'SD-003', name:'Ryan T. – Van', location:'Van · ABC-123', icon:'🚐',
     parts:[
-      {partNo:'PL-001', desc:'40mm P-Trap',               qty:4,  unit:'ea',   unitCost:8.50},
-      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:10, unit:'ea',   unitCost:4.20},
-      {partNo:'PL-007', desc:'Silicone Sealant White',     qty:2,  unit:'tube', unitCost:12.00},
-      {partNo:'PL-014', desc:'PTFE Tape 12mm',             qty:6,  unit:'roll', unitCost:2.50},
+      {partNo:'PL-001', desc:'40mm P-Trap',           qty:4,  unit:'ea',   unitCost:8.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',      qty:10, unit:'ea',   unitCost:4.20},
+      {partNo:'PL-007', desc:'Silicone Sealant White', qty:2,  unit:'tube', unitCost:12.00},
+      {partNo:'PL-014', desc:'PTFE Tape 12mm',         qty:6,  unit:'roll', unitCost:2.50},
     ]},
-  { id:'SD-004', name:'Steve K. – Van', type:'Vehicle', location:'Van · XYZ-456', icon:'🚐',
+  { id:'SD-004', name:'Steve K. – Van', location:'Van · XYZ-456', icon:'🚐',
     parts:[
-      {partNo:'PL-001', desc:'40mm P-Trap',               qty:2,  unit:'ea',   unitCost:8.50},
-      {partNo:'PL-006', desc:'15mm Isolating Valve',       qty:3,  unit:'ea',   unitCost:14.00},
-      {partNo:'PL-014', desc:'PTFE Tape 12mm',             qty:4,  unit:'roll', unitCost:2.50},
-      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:6,  unit:'ea',   unitCost:4.20},
+      {partNo:'PL-001', desc:'40mm P-Trap',         qty:2, unit:'ea',   unitCost:8.50},
+      {partNo:'PL-006', desc:'15mm Isolating Valve', qty:3, unit:'ea',   unitCost:14.00},
+      {partNo:'PL-014', desc:'PTFE Tape 12mm',       qty:4, unit:'roll', unitCost:2.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',    qty:6, unit:'ea',   unitCost:4.20},
     ]},
-  { id:'SD-005', name:'Ben M. – Van', type:'Vehicle', location:'Van · DEF-789', icon:'🚐',
+  { id:'SD-005', name:'Ben M. – Van', location:'Van · DEF-789', icon:'🚐',
     parts:[
-      {partNo:'PL-003', desc:'Cistern Fill Valve',         qty:3,  unit:'ea',   unitCost:18.00},
-      {partNo:'PL-005', desc:'22mm Compression Elbow',     qty:5,  unit:'ea',   unitCost:6.50},
-      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:8,  unit:'ea',   unitCost:4.20},
-      {partNo:'PL-007', desc:'Silicone Sealant White',     qty:2,  unit:'tube', unitCost:12.00},
+      {partNo:'PL-003', desc:'Cistern Fill Valve',      qty:3, unit:'ea',   unitCost:18.00},
+      {partNo:'PL-005', desc:'22mm Compression Elbow',  qty:5, unit:'ea',   unitCost:6.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',       qty:8, unit:'ea',   unitCost:4.20},
+      {partNo:'PL-007', desc:'Silicone Sealant White',  qty:2, unit:'tube', unitCost:12.00},
     ]},
-  { id:'SD-006', name:'Cavendish Site Storage', type:'Site', location:'8 Cavendish Drive, Manukau', icon:'📦',
+  { id:'SD-006', name:'Cavendish Site Storage', location:'8 Cavendish Drive, Manukau', icon:'📦',
     parts:[
-      {partNo:'PL-003', desc:'Cistern Fill Valve',         qty:3,  unit:'ea',   unitCost:18.00},
-      {partNo:'PL-015', desc:'Caroma Hand Basin 400mm',    qty:2,  unit:'ea',   unitCost:195.00},
+      {partNo:'PL-003', desc:'Cistern Fill Valve',       qty:3, unit:'ea', unitCost:18.00},
+      {partNo:'PL-015', desc:'Caroma Hand Basin 400mm',  qty:2, unit:'ea', unitCost:195.00},
     ]},
 ];
 
@@ -312,6 +368,8 @@ let currentFilter = 3;
 let customStart = null, customEnd = null;
 let collapsedCCs = new Set();
 let poCounter = 1001;
+let currentPOFilter = 'pending';
+let openStorageDevices = new Set();
 
 // ===== UTILITIES =====
 function updateCartBadge() { document.getElementById('cart-badge').textContent = cart.length; }
@@ -325,6 +383,93 @@ function fmtDate(dateStr) {
   return diff + ' days · ' + s;
 }
 
+function getTotalStock(desc) {
+  let total = 0;
+  storageDevices.forEach(sd => {
+    const p = sd.parts.find(x => x.desc === desc);
+    if (p) total += p.qty;
+  });
+  return total;
+}
+
+function getStockSources(desc) {
+  const sources = [];
+  storageDevices.forEach(sd => {
+    const p = sd.parts.find(x => x.desc === desc);
+    if (p && p.qty > 0) sources.push({sd, part: p});
+  });
+  return sources;
+}
+
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  const bg = type === 'success' ? 'bg-emerald-700' : 'bg-slate-900';
+  t.className = `fixed top-4 right-4 ${bg} text-white text-sm px-4 py-2.5 rounded-xl shadow-lg z-[999] flex items-center gap-2`;
+  t.innerHTML = (type === 'success' ? '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>' : '') + `<span>${msg}</span>`;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 2500);
+}
+
+// ===== NAVIGATION =====
+function navigate(view) {
+  document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('bg-blue-50','text-blue-700','font-semibold');
+    n.classList.add('text-slate-600');
+  });
+  const views = {ccs:'view-ccs','bulk-order':'view-bulk-order',pos:'view-pos',stock:'view-stock'};
+  const navs  = {ccs:'nav-ccs','bulk-order':'nav-pos',pos:'nav-pos',stock:'nav-stock'};
+  const titles = {ccs:'Scheduled Cost Centres','bulk-order':'Bulk Order',pos:'Purchase Orders',stock:'Stock'};
+  document.getElementById(views[view]).classList.remove('hidden');
+  const nav = document.getElementById(navs[view]);
+  if (nav) { nav.classList.add('bg-blue-50','text-blue-700','font-semibold'); nav.classList.remove('text-slate-600'); }
+  document.getElementById('breadcrumb').textContent = titles[view];
+  if (view === 'ccs') renderCCList();
+  if (view === 'bulk-order') renderBulkOrder();
+  if (view === 'pos') renderPOs();
+  if (view === 'stock') renderStorage();
+  document.getElementById('selection-footer').classList[view==='ccs' && selectedMaterials.size>0 ? 'remove' : 'add']('hidden');
+  updateCartBadge();
+}
+
+// ===== FILTER =====
+function setFilter(val) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('bg-blue-600','text-white');
+    b.classList.add('text-slate-600','bg-white','border','border-slate-200');
+  });
+  const el = document.getElementById('filter-' + val);
+  if (el) { el.classList.add('bg-blue-600','text-white'); el.classList.remove('text-slate-600','bg-white','border','border-slate-200'); }
+  const row = document.getElementById('custom-date-row');
+  if (val === 'custom') {
+    row.classList.remove('hidden');
+    if (!document.getElementById('custom-from').value) {
+      const from = new Date(TODAY), to = new Date(TODAY);
+      to.setDate(to.getDate() + 14);
+      document.getElementById('custom-from').value = from.toISOString().split('T')[0];
+      document.getElementById('custom-to').value   = to.toISOString().split('T')[0];
+    }
+    return;
+  } else {
+    row.classList.add('hidden');
+    customStart = null; customEnd = null;
+  }
+  selectedMaterials.clear();
+  renderCCList();
+  updateStickyFooter();
+}
+
+function applyCustomFilter() {
+  customStart = document.getElementById('custom-from').value;
+  customEnd   = document.getElementById('custom-to').value;
+  if (!customStart || !customEnd) return;
+  selectedMaterials.clear();
+  renderCCList();
+  updateStickyFooter();
+}
+
+// ===== FILTERING =====
 function getFilteredCCs() {
   let start, end;
   if (currentFilter === 'custom' && customStart && customEnd) {
@@ -354,84 +499,15 @@ function findMat(matId) {
   return null;
 }
 
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className = 'fixed top-4 right-4 bg-gray-900 text-white text-sm px-4 py-2.5 rounded-lg shadow-lg z-[999]';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 2200);
-}
-
-// ===== NAVIGATION =====
-function navigate(view) {
-  document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-  document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('bg-blue-700','text-white'); n.classList.add('text-blue-200'); });
-  const views = {ccs:'view-ccs', 'bulk-order':'view-bulk-order', pos:'view-pos', stock:'view-stock'};
-  const navs  = {ccs:'nav-ccs', 'bulk-order':'nav-pos', pos:'nav-pos', stock:'nav-stock'};
-  const titles = {ccs:'Scheduled Cost Centres', 'bulk-order':'Bulk Order', pos:'Purchase Orders', stock:'Stock'};
-  document.getElementById(views[view]).classList.remove('hidden');
-  const nav = document.getElementById(navs[view]);
-  if (nav) { nav.classList.add('bg-blue-700','text-white'); nav.classList.remove('text-blue-200'); }
-  document.getElementById('breadcrumb').textContent = titles[view];
-  if (view === 'ccs') renderCCList();
-  if (view === 'bulk-order') renderBulkOrder();
-  if (view === 'pos') renderPOs();
-  if (view === 'stock') renderStorage();
-  document.getElementById('selection-footer').classList[view==='ccs' && selectedMaterials.size>0 ? 'remove' : 'add']('hidden');
-  updateCartBadge();
-}
-
-// ===== FILTER =====
-function setFilter(val) {
-  currentFilter = val;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.remove('bg-[#0f2d4a]','text-white');
-    b.classList.add('text-gray-600','bg-white','border','border-gray-300');
-  });
-  const el = document.getElementById('filter-' + val);
-  if (el) { el.classList.add('bg-[#0f2d4a]','text-white'); el.classList.remove('text-gray-600','bg-white','border','border-gray-300'); }
-  // Show/hide custom date row
-  const row = document.getElementById('custom-date-row');
-  if (val === 'custom') {
-    row.classList.remove('hidden');
-    // Pre-fill defaults: today → today+14
-    if (!document.getElementById('custom-from').value) {
-      const from = new Date(TODAY), to = new Date(TODAY);
-      to.setDate(to.getDate() + 14);
-      document.getElementById('custom-from').value = from.toISOString().split('T')[0];
-      document.getElementById('custom-to').value   = to.toISOString().split('T')[0];
-    }
-    // Don't re-render until Apply is clicked
-    return;
-  } else {
-    row.classList.add('hidden');
-    customStart = null; customEnd = null;
-  }
-  selectedMaterials.clear();
-  renderCCList();
-  updateStickyFooter();
-}
-
-function applyCustomFilter() {
-  customStart = document.getElementById('custom-from').value;
-  customEnd   = document.getElementById('custom-to').value;
-  if (!customStart || !customEnd) return;
-  selectedMaterials.clear();
-  renderCCList();
-  updateStickyFooter();
-}
-
-// ===== PURCHASE ORDERS RENDER =====
-let currentPOFilter = 'pending';
-
+// ===== PURCHASE ORDERS =====
 function setPOFilter(f) {
   currentPOFilter = f;
   document.querySelectorAll('.po-filter-btn').forEach(b => {
-    b.classList.remove('bg-[#0f2d4a]','text-white');
-    b.classList.add('text-gray-600','bg-white','border','border-gray-300');
+    b.classList.remove('bg-blue-600','text-white');
+    b.classList.add('text-slate-600','bg-white','border','border-slate-200');
   });
   const el = document.getElementById('po-filter-' + f);
-  if (el) { el.classList.add('bg-[#0f2d4a]','text-white'); el.classList.remove('text-gray-600','bg-white','border','border-gray-300'); }
+  if (el) { el.classList.add('bg-blue-600','text-white'); el.classList.remove('text-slate-600','bg-white','border','border-slate-200'); }
   renderPOs();
 }
 
@@ -439,9 +515,9 @@ function renderPOs() {
   const statusMap = {
     'Sent':              {bg:'bg-blue-100',  text:'text-blue-700'},
     'Partially Received':{bg:'bg-amber-100', text:'text-amber-700'},
-    'Received':          {bg:'bg-green-100',  text:'text-green-700'},
-    'Completed':         {bg:'bg-purple-100', text:'text-purple-700'},
-    'Draft':             {bg:'bg-gray-100',   text:'text-gray-600'},
+    'Received':          {bg:'bg-emerald-100', text:'text-emerald-700'},
+    'Completed':         {bg:'bg-violet-100', text:'text-violet-700'},
+    'Draft':             {bg:'bg-slate-100',  text:'text-slate-600'},
   };
   const pendingStatuses = ['Sent','Partially Received','Draft'];
   const filtered = purchaseOrders.filter(po => {
@@ -456,60 +532,82 @@ function renderPOs() {
   const pendingCount = purchaseOrders.filter(p => pendingStatuses.includes(p.status)).length;
 
   document.getElementById('po-summary').innerHTML = `
-    <div class="flex items-center gap-0 bg-white border border-gray-200 rounded-xl shadow-sm mb-1 overflow-hidden">
-      <div class="text-center px-6 py-3 border-r border-gray-200">
-        <div class="text-2xl font-extrabold text-[#0f2d4a]">${pendingCount}</div>
-        <div class="text-xs text-gray-400 font-medium">Pending POs</div>
+    <div class="flex items-stretch bg-white border border-slate-200 rounded-xl shadow-sm mb-1 overflow-hidden">
+      <div class="text-center px-6 py-3 border-r border-slate-200">
+        <div class="text-2xl font-extrabold text-slate-800">${pendingCount}</div>
+        <div class="text-xs text-slate-400 font-medium mt-0.5">Pending POs <em class="font-normal text-slate-300">(.status)</em></div>
       </div>
       <div class="text-center px-6 py-3">
         <div class="text-2xl font-extrabold text-orange-500">$${pendingTotal.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div class="text-xs text-gray-400 font-medium">Outstanding Value</div>
+        <div class="text-xs text-slate-400 font-medium mt-0.5">Outstanding Value</div>
       </div>
     </div>`;
 
   if (filtered.length === 0) {
-    document.getElementById('po-list').innerHTML = `<div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm"><p class="text-gray-400">No purchase orders in this category.</p></div>`;
+    document.getElementById('po-list').innerHTML = `<div class="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-sm"><p class="text-slate-400">No purchase orders in this category.</p></div>`;
     return;
   }
 
   document.getElementById('po-list').innerHTML = `
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <table class="w-full text-sm">
-        <thead><tr class="bg-gray-50 border-b border-gray-200">
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase w-8"></th>
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">PO #</th>
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Supplier</th>
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Job / Cost Centre</th>
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Date Sent</th>
-          <th class="px-5 py-3 text-center text-xs font-semibold text-gray-400 uppercase">Items</th>
-          <th class="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase">Total</th>
-          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
-        </tr></thead>
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="px-4 py-3 w-8"></th>
+            <th class="px-4 py-3 text-left">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">PO #</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">.id</em>
+            </th>
+            <th class="px-4 py-3 text-left">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Supplier</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">.supplier.name</em>
+            </th>
+            <th class="px-4 py-3 text-left">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Job / Cost Centre</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">.job.id / .section.id</em>
+            </th>
+            <th class="px-4 py-3 text-left">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Date Sent</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">.dateSent</em>
+            </th>
+            <th class="px-4 py-3 text-center">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Items</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">/lineItems</em>
+            </th>
+            <th class="px-4 py-3 text-right">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Total</span>
+            </th>
+            <th class="px-4 py-3 text-left">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Status</span>
+              <em class="block text-[10px] font-normal normal-case tracking-normal text-slate-300">.status</em>
+            </th>
+          </tr>
+        </thead>
         <tbody>
           ${filtered.map(po => {
             const total = po.items.reduce((s,i)=>s+i.qty*i.unitCost,0);
             const sc = statusMap[po.status] || statusMap['Draft'];
             return `
-              <tr class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="togglePODetail('${po.id}')">
-                <td class="px-5 py-3 text-gray-400">
+              <tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" onclick="togglePODetail('${po.id}')">
+                <td class="px-4 py-3 text-slate-300">
                   <svg id="po-chev-${po.id}" class="w-4 h-4 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </td>
-                <td class="px-5 py-3 font-semibold text-blue-700">${po.id}</td>
-                <td class="px-5 py-3 text-gray-700">${po.supplier}</td>
-                <td class="px-5 py-3">
+                <td class="px-4 py-3 font-semibold text-blue-600">${po.id}</td>
+                <td class="px-4 py-3 text-slate-700">${po.supplier}</td>
+                <td class="px-4 py-3">
                   ${po.jobId
-                    ? `<span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded mr-1">${po.jobId}</span><span class="text-gray-500">${po.ccId} – ${po.ccName}</span>`
-                    : `<span class="text-xs font-medium text-gray-400 italic">Stock order</span>`}
+                    ? `<span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded mr-1">${po.jobId}</span><span class="text-slate-500">${po.ccId} – ${po.ccName}</span>`
+                    : `<span class="text-xs font-medium text-slate-400 italic">Stock order</span>`}
                 </td>
-                <td class="px-5 py-3 text-gray-500">${new Date(po.sentDate+'T00:00:00').toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})}</td>
-                <td class="px-5 py-3 text-center text-gray-500">${po.items.length}</td>
-                <td class="px-5 py-3 text-right font-semibold text-gray-800">$${total.toFixed(2)}</td>
-                <td class="px-5 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}">${po.status}</span></td>
+                <td class="px-4 py-3 text-slate-500">${new Date(po.sentDate+'T00:00:00').toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})}</td>
+                <td class="px-4 py-3 text-center text-slate-500">${po.items.length}</td>
+                <td class="px-4 py-3 text-right font-semibold text-slate-800">$${total.toFixed(2)}</td>
+                <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}">${po.status}</span></td>
               </tr>
-              <tr id="po-detail-${po.id}" class="hidden border-b border-gray-100 bg-blue-50">
+              <tr id="po-detail-${po.id}" class="hidden border-b border-slate-100 bg-blue-50/50">
                 <td colspan="8" class="px-10 py-3">
                   <table class="w-full text-sm">
-                    <thead><tr class="text-xs font-medium text-gray-400 uppercase border-b border-gray-200">
+                    <thead><tr class="text-xs font-semibold text-slate-400 uppercase border-b border-slate-200">
                       <th class="pb-2 text-left">Item</th>
                       <th class="pb-2 text-center">Qty</th>
                       <th class="pb-2 text-right">Unit Cost</th>
@@ -517,11 +615,11 @@ function renderPOs() {
                     </tr></thead>
                     <tbody>
                       ${po.items.map(i=>`
-                        <tr class="border-b border-gray-100 last:border-0">
-                          <td class="py-2 text-gray-700">${i.desc}</td>
-                          <td class="py-2 text-center text-gray-600">${i.qty}</td>
-                          <td class="py-2 text-right text-gray-500">$${i.unitCost.toFixed(2)}</td>
-                          <td class="py-2 text-right font-medium text-gray-800">$${(i.qty*i.unitCost).toFixed(2)}</td>
+                        <tr class="border-b border-slate-100 last:border-0">
+                          <td class="py-2 text-slate-700">${i.desc}</td>
+                          <td class="py-2 text-center text-slate-600">${i.qty}</td>
+                          <td class="py-2 text-right text-slate-500">$${i.unitCost.toFixed(2)}</td>
+                          <td class="py-2 text-right font-medium text-slate-800">$${(i.qty*i.unitCost).toFixed(2)}</td>
                         </tr>`).join('')}
                     </tbody>
                   </table>
@@ -541,58 +639,50 @@ function togglePODetail(poId) {
   if (chev) chev.classList.toggle('rotate-90', !hidden);
 }
 
-// ===== STORAGE DEVICES RENDER =====
-let openStorageDevices = new Set();
-
+// ===== STORAGE =====
 function renderStorage() {
   document.getElementById('storage-list').innerHTML = storageDevices.map(sd => {
     const totalValue = sd.parts.reduce((s,p)=>s+p.qty*p.unitCost,0);
     const isOpen = openStorageDevices.has(sd.id);
-    const typeColour = sd.type==='Vehicle' ? 'bg-blue-50 text-blue-700 border-blue-200'
-                     : sd.type==='Site'    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                     :                       'bg-gray-100 text-gray-600 border-gray-200';
     const partsRows = sd.parts.map(p => `
-      <tr class="border-b border-gray-50 hover:bg-gray-50">
-        <td class="px-5 py-2.5 font-mono text-xs text-gray-400">${p.partNo}</td>
-        <td class="px-5 py-2.5 text-gray-800">${p.desc}</td>
-        <td class="px-5 py-2.5 text-center font-semibold ${p.qty<=3?'text-orange-500':'text-gray-700'}">${p.qty}</td>
-        <td class="px-5 py-2.5 text-center text-gray-500">${p.unit}</td>
-        <td class="px-5 py-2.5 text-right text-gray-500">$${p.unitCost.toFixed(2)}</td>
-        <td class="px-5 py-2.5 text-right font-medium text-gray-700">$${(p.qty*p.unitCost).toFixed(2)}</td>
+      <tr class="border-b border-slate-50 hover:bg-slate-50">
+        <td class="px-5 py-2.5 font-mono text-xs text-slate-400">${p.partNo} <em class="text-slate-300">(.partNo)</em></td>
+        <td class="px-5 py-2.5 text-slate-800">${p.desc} <em class="text-[10px] text-slate-300">(.description)</em></td>
+        <td class="px-5 py-2.5 text-center font-semibold ${p.qty<=3?'text-orange-500':'text-slate-700'}">${p.qty} <em class="text-[10px] font-normal text-slate-300">(.stockOnHand)</em></td>
+        <td class="px-5 py-2.5 text-center text-slate-500">${p.unit} <em class="text-[10px] text-slate-300">(.unitOfMeasure)</em></td>
+        <td class="px-5 py-2.5 text-right text-slate-500">$${p.unitCost.toFixed(2)} <em class="text-[10px] text-slate-300">(.unitCost)</em></td>
+        <td class="px-5 py-2.5 text-right font-medium text-slate-700">$${(p.qty*p.unitCost).toFixed(2)}</td>
       </tr>`).join('');
 
     return `
-      <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-3 overflow-hidden">
-        <div class="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-gray-50 select-none" onclick="toggleStorage('${sd.id}')">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-3 overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-slate-50 select-none" onclick="toggleStorage('${sd.id}')">
           <span class="text-2xl">${sd.icon}</span>
-          <svg id="sd-chev-${sd.id}" class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-150 ${isOpen?'rotate-90':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <svg id="sd-chev-${sd.id}" class="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-150 ${isOpen?'rotate-90':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-900">${sd.name}</span>
-              <span class="text-xs font-medium px-2 py-0.5 rounded-full border ${typeColour}">${sd.type}</span>
-            </div>
-            <div class="text-xs text-gray-400 mt-0.5">${sd.location}</div>
+            <div class="font-bold text-slate-900">${sd.name} <em class="text-[10px] font-normal text-slate-300">(.name)</em></div>
+            <div class="text-xs text-slate-400 mt-0.5">${sd.location} <em class="text-[10px] text-slate-300">(.location)</em></div>
           </div>
           <div class="flex items-center gap-6 text-right flex-shrink-0">
             <div>
-              <div class="font-semibold text-gray-700">${sd.parts.length} parts</div>
-              <div class="text-xs text-gray-400">in stock</div>
+              <div class="font-semibold text-slate-700">${sd.parts.length} parts</div>
+              <div class="text-xs text-slate-400">in stock</div>
             </div>
             <div>
-              <div class="font-semibold text-gray-700">$${totalValue.toFixed(2)}</div>
-              <div class="text-xs text-gray-400">est. value</div>
+              <div class="font-semibold text-slate-700">$${totalValue.toFixed(2)}</div>
+              <div class="text-xs text-slate-400">est. value</div>
             </div>
           </div>
         </div>
-        <div id="sd-body-${sd.id}" class="${isOpen?'':'hidden'} border-t border-gray-100">
+        <div id="sd-body-${sd.id}" class="${isOpen?'':'hidden'} border-t border-slate-100">
           <table class="w-full text-sm">
-            <thead><tr class="bg-gray-50 border-b border-gray-100">
-              <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Part #</th>
-              <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Description</th>
-              <th class="px-5 py-2 text-center text-xs font-medium text-gray-400 uppercase">Qty</th>
-              <th class="px-5 py-2 text-center text-xs font-medium text-gray-400 uppercase">Unit</th>
-              <th class="px-5 py-2 text-right text-xs font-medium text-gray-400 uppercase">Unit Cost</th>
-              <th class="px-5 py-2 text-right text-xs font-medium text-gray-400 uppercase">Total Value</th>
+            <thead><tr class="bg-slate-50 border-b border-slate-100">
+              <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Part # <em class="font-normal text-slate-300 normal-case tracking-normal">(.partNo)</em></th>
+              <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Description <em class="font-normal text-slate-300 normal-case tracking-normal">(.description)</em></th>
+              <th class="px-5 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty <em class="font-normal text-slate-300 normal-case tracking-normal">(.stockOnHand)</em></th>
+              <th class="px-5 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Unit <em class="font-normal text-slate-300 normal-case tracking-normal">(.unitOfMeasure)</em></th>
+              <th class="px-5 py-2 text-right text-xs font-semibold text-slate-400 uppercase tracking-wide">Unit Cost <em class="font-normal text-slate-300 normal-case tracking-normal">(.unitCost)</em></th>
+              <th class="px-5 py-2 text-right text-xs font-semibold text-slate-400 uppercase tracking-wide">Total Value</th>
             </tr></thead>
             <tbody>${partsRows}</tbody>
           </table>
@@ -602,7 +692,7 @@ function renderStorage() {
 }
 
 function toggleStorage(sdId) {
-  if (openStorageDevices.has(sdId)) { openStorageDevices.delete(sdId); } else { openStorageDevices.add(sdId); }
+  if (openStorageDevices.has(sdId)) openStorageDevices.delete(sdId); else openStorageDevices.add(sdId);
   const body = document.getElementById('sd-body-' + sdId);
   const chev = document.getElementById('sd-chev-' + sdId);
   if (body) body.classList.toggle('hidden', !openStorageDevices.has(sdId));
@@ -655,19 +745,33 @@ function updateStickyFooter() {
   const footer = document.getElementById('selection-footer');
   if (selectedMaterials.size === 0) { footer.classList.add('hidden'); return; }
   footer.classList.remove('hidden');
-  const assignable = [...selectedMaterials].filter(id => { const r=findMat(id); return r && r.mat.qtyAssigned < r.mat.qtyReq; }).length;
+  const assignable = [...selectedMaterials].filter(id => {
+    const r = findMat(id);
+    return r && r.mat.qtyAssigned < r.mat.qtyReq && getTotalStock(r.mat.desc) > 0;
+  }).length;
   document.getElementById('selection-summary').textContent =
     selectedMaterials.size + ' item' + (selectedMaterials.size!==1?'s':'') + ' selected' +
-    (assignable > 0 ? ' · ' + assignable + ' can be assigned from stock' : '');
+    (assignable > 0 ? ' · ' + assignable + ' have stock available' : '');
 }
 
 // ===== BATCH ACTIONS =====
 function batchAssignStock() {
   let n = 0;
-  selectedMaterials.forEach(id => { const r=findMat(id); if(r && r.mat.qtyAssigned < r.mat.qtyReq){ r.mat.qtyAssigned=r.mat.qtyReq; n++; }});
+  selectedMaterials.forEach(id => {
+    const r = findMat(id);
+    if (!r || r.mat.qtyAssigned >= r.mat.qtyReq) return;
+    const sources = getStockSources(r.mat.desc);
+    if (sources.length === 0) return;
+    const best = sources.sort((a,b) => b.part.qty - a.part.qty)[0];
+    const qty = r.mat.qtyReq - r.mat.qtyAssigned;
+    best.part.qty = Math.max(0, best.part.qty - qty);
+    r.mat.qtyAssigned = r.mat.qtyReq;
+    n++;
+  });
   selectedMaterials.clear();
   renderCCList(); updateStickyFooter();
-  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' assigned from stock');
+  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' assigned from stock', 'success');
+  else showToast('No stock available for selected items');
 }
 
 function batchAddToOrder() {
@@ -680,19 +784,99 @@ function batchAddToOrder() {
   });
   selectedMaterials.clear();
   updateCartBadge(); renderCCList(); updateStickyFooter();
-  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' added to order');
+  if (n>0) showToast(n + ' item'+(n!==1?'s':'')+' added to order', 'success');
 }
 
-// ===== RENDER CC LIST =====
+// ===== ASSIGN STOCK MODAL =====
+function assignSingle(matId) {
+  const r = findMat(matId); if (!r) return;
+  const needed = r.mat.qtyReq - r.mat.qtyAssigned;
+  const sources = getStockSources(r.mat.desc);
+  showAssignModal(matId, r.mat.desc, needed, r.cc.name, r.job.id, sources);
+}
+
+function showAssignModal(matId, matDesc, needed, ccName, jobId, sources) {
+  const sourcesHtml = sources.length === 0
+    ? `<div class="text-center py-8">
+        <div class="text-3xl mb-3">📦</div>
+        <p class="font-semibold text-slate-700">No stock available</p>
+        <p class="text-sm text-slate-400 mt-1">This part is not held in any storage location.</p>
+       </div>
+       <div class="flex justify-end pt-2">
+         <button onclick="closeModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50">Close</button>
+       </div>`
+    : `<p class="text-sm font-semibold text-slate-600 mb-3">Choose storage location:</p>
+       <div class="space-y-2 mb-5">
+         ${sources.map((src, i) => {
+           const enough = src.part.qty >= needed;
+           return `<label class="flex items-center gap-3 p-3.5 rounded-xl border ${i===0?'border-blue-400 bg-blue-50':'border-slate-200'} cursor-pointer hover:border-blue-400 hover:bg-blue-50/60 transition-colors" onclick="this.querySelectorAll('input')[0].checked=true;document.querySelectorAll('.assign-src-label').forEach(l=>l.classList.remove('border-blue-400','bg-blue-50'));this.classList.add('border-blue-400','bg-blue-50')">
+             <input type="radio" name="assign-source" value="${src.sd.id}" ${i===0?'checked':''} class="assign-src-radio text-blue-600 flex-shrink-0">
+             <div class="flex-1">
+               <div class="font-semibold text-slate-800 text-sm">${src.sd.name}</div>
+               <div class="text-xs text-slate-400 mt-0.5">${src.sd.location}</div>
+             </div>
+             <div class="text-right flex-shrink-0">
+               <div class="font-bold text-sm ${enough ? 'text-emerald-600' : 'text-amber-500'}">${src.part.qty} in stock</div>
+               ${!enough ? `<div class="text-xs text-amber-500">Only ${src.part.qty} available</div>` : `<div class="text-xs text-emerald-500">Enough available</div>`}
+             </div>
+           </label>`;
+         }).join('')}
+       </div>
+       <div class="flex justify-end gap-3">
+         <button onclick="closeModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50">Cancel</button>
+         <button onclick="confirmAssign('${matId}')" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm flex items-center gap-2">
+           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+           Assign Stock
+         </button>
+       </div>`;
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+      <div>
+        <h2 class="text-base font-bold text-slate-900">Assign from Stock</h2>
+        <p class="text-sm text-slate-400 mt-0.5">${matDesc}</p>
+      </div>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-4 mb-5 p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm">
+        <div class="text-center px-3">
+          <div class="text-xl font-bold text-slate-900">${needed}</div>
+          <div class="text-xs text-slate-400">Need</div>
+        </div>
+        <div class="h-8 w-px bg-slate-200"></div>
+        <span class="text-slate-500">Required for <strong class="text-slate-800">${ccName}</strong> <span class="text-blue-600 font-semibold">${jobId}</span></span>
+      </div>
+      ${sourcesHtml}
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function confirmAssign(matId) {
+  const selected = document.querySelector('input[name="assign-source"]:checked');
+  if (!selected) return;
+  const sdId = selected.value;
+  const r = findMat(matId); if (!r) return;
+  const sd = storageDevices.find(s => s.id === sdId); if (!sd) return;
+  const part = sd.parts.find(p => p.desc === r.mat.desc); if (!part) return;
+  const qty = r.mat.qtyReq - r.mat.qtyAssigned;
+  part.qty = Math.max(0, part.qty - qty);
+  r.mat.qtyAssigned = r.mat.qtyReq;
+  closeModal();
+  renderCCList();
+  showToast(`${qty}× ${r.mat.desc} assigned from ${sd.name}`, 'success');
+}
+
+// ===== CC LIST (grouped by job) =====
 function renderCCList() {
   const filtered = getFilteredCCs();
 
-  // Count excluded CCs (for the hint)
   let excStart, excEnd;
   if (currentFilter === 'custom' && customStart && customEnd) {
     excStart = new Date(customStart+'T00:00:00'); excEnd = new Date(customEnd+'T00:00:00');
   } else {
-    excStart = new Date(TODAY); excEnd = new Date(TODAY); excEnd.setDate(excEnd.getDate()+(currentFilter===99?365:currentFilter));
+    excStart = new Date(TODAY); excEnd = new Date(TODAY);
+    excEnd.setDate(excEnd.getDate() + (currentFilter===99?365:currentFilter));
   }
   let excluded = 0;
   jobs.forEach(job => job.costCentres.forEach(cc => {
@@ -704,103 +888,139 @@ function renderCCList() {
   const totalCost  = filtered.reduce((s,{cc})=>s+cc.materials.reduce((ss,m)=>ss+Math.max(0,m.qtyReq-m.qtyAssigned)*m.unitCost,0), 0);
 
   document.getElementById('summary-bar').innerHTML = filtered.length===0 ? '' : `
-    <div class="flex items-center gap-0 bg-white border border-gray-200 rounded-xl shadow-sm mb-1 overflow-hidden">
-      <div class="text-center px-6 py-3 border-r border-gray-200">
-        <div class="text-2xl font-extrabold text-[#0f2d4a]">${filtered.length}</div>
-        <div class="text-xs text-gray-400 font-medium">Cost Centres</div>
+    <div class="flex items-stretch bg-white border border-slate-200 rounded-xl shadow-sm mb-1 overflow-hidden">
+      <div class="text-center px-5 py-3 border-r border-slate-200">
+        <div class="text-2xl font-extrabold text-slate-800">${filtered.length}</div>
+        <div class="text-xs text-slate-400 font-medium mt-0.5">Cost Centres</div>
       </div>
-      <div class="text-center px-6 py-3 border-r border-gray-200">
+      <div class="text-center px-5 py-3 border-r border-slate-200">
         <div class="text-2xl font-extrabold text-orange-500">${totalItems}</div>
-        <div class="text-xs text-gray-400 font-medium">Items to Order</div>
+        <div class="text-xs text-slate-400 font-medium mt-0.5">Items to Order</div>
       </div>
-      <div class="text-center px-6 py-3">
-        <div class="text-2xl font-extrabold text-gray-700">$${totalCost.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div class="text-xs text-gray-400 font-medium">Est. Total</div>
+      <div class="text-center px-5 py-3">
+        <div class="text-2xl font-extrabold text-slate-700">$${totalCost.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div class="text-xs text-slate-400 font-medium mt-0.5">Est. Total</div>
       </div>
-      ${excluded>0 ? `<div class="ml-auto px-5 text-xs text-gray-400 italic">${excluded} cost centre${excluded!==1?'s':''} outside filter range — not shown</div>` : ''}
+      ${excluded>0 ? `<div class="ml-auto px-5 flex items-center text-xs text-slate-400 italic">${excluded} CC${excluded!==1?'s':''} outside filter — not shown</div>` : ''}
     </div>`;
 
   if (filtered.length===0) {
-    document.getElementById('cc-list').innerHTML=`<div class="bg-white rounded-xl border border-gray-200 p-14 text-center shadow-sm"><p class="text-gray-500 font-semibold">No cost centres scheduled in this period</p><p class="text-gray-400 text-sm mt-1">Try a wider date filter.</p></div>`;
+    document.getElementById('cc-list').innerHTML=`<div class="bg-white rounded-xl border border-slate-200 p-14 text-center shadow-sm"><p class="text-slate-600 font-semibold">No cost centres scheduled in this period</p><p class="text-slate-400 text-sm mt-1">Try a wider date filter.</p></div>`;
     return;
   }
 
-  document.getElementById('cc-list').innerHTML = filtered.map(({cc, job}) => {
-    const toOrder = cc.materials.filter(m => m.qtyReq - m.qtyAssigned > 0);
-    const isCollapsed = collapsedCCs.has(cc.id);
-    const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
-    const someSel = cc.materials.some(m => selectedMaterials.has(m.id));
+  // Group by job, sorted by earliest CC date
+  const jobMap = {};
+  filtered.forEach(({cc, job}) => {
+    if (!jobMap[job.id]) jobMap[job.id] = {job, ccs:[]};
+    jobMap[job.id].ccs.push(cc);
+  });
+  const groups = Object.values(jobMap).sort((a,b) => {
+    const aMin = Math.min(...a.ccs.map(c=>new Date(c.scheduledDate)));
+    const bMin = Math.min(...b.ccs.map(c=>new Date(c.scheduledDate)));
+    return aMin - bMin;
+  });
 
-    const matRows = cc.materials.map(mat => {
-      const qty = mat.qtyReq - mat.qtyAssigned;
-      const inCart = cart.some(i => i.materialId===mat.id);
-      const done = mat.qtyAssigned >= mat.qtyReq;
+  const jobStatusBadge = s => {
+    const m = {Pending:'bg-amber-100 text-amber-700', 'In Progress':'bg-blue-100 text-blue-700', Completed:'bg-emerald-100 text-emerald-700'};
+    return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold ${m[s]||'bg-slate-100 text-slate-600'}">${s}</span>`;
+  };
+
+  document.getElementById('cc-list').innerHTML = groups.map(({job, ccs}) => {
+    const ccHtml = ccs.map(cc => {
+      const toOrder = cc.materials.filter(m => m.qtyReq - m.qtyAssigned > 0);
+      const isCollapsed = collapsedCCs.has(cc.id);
+      const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
+
+      const matRows = cc.materials.map(mat => {
+        const qtyUnalloc = mat.qtyReq - mat.qtyAssigned;
+        const inCart = cart.some(i => i.materialId===mat.id);
+        const done = mat.qtyAssigned >= mat.qtyReq;
+        const stockTotal = getTotalStock(mat.desc);
+        const stockClass = done ? 'text-slate-400' : stockTotal >= qtyUnalloc && qtyUnalloc > 0 ? 'text-emerald-600 font-semibold' : stockTotal > 0 ? 'text-amber-500 font-semibold' : 'text-slate-400';
+        const valueReqd = (qtyUnalloc * mat.unitCost).toFixed(2);
+        return `
+          <tr class="border-b border-slate-50 hover:bg-blue-50/30">
+            <td class="pl-10 pr-3 py-2.5">
+              <input type="checkbox" id="mat-cb-${mat.id}" class="mat-cb w-4 h-4 rounded border-slate-300 text-blue-600 cursor-pointer" ${selectedMaterials.has(mat.id)?'checked':''} onchange="toggleMaterial('${mat.id}',this.checked)">
+            </td>
+            <td class="px-3 py-2.5 text-slate-800">${mat.desc} <em class="text-[10px] text-slate-300">(.catalogue.name)</em></td>
+            <td class="px-3 py-2.5 text-center text-slate-700 font-medium">${mat.qtyReq} <em class="text-[10px] font-normal text-slate-300">(.quantity)</em></td>
+            <td class="px-3 py-2.5 text-center ${mat.qtyAssigned>0?'text-emerald-600 font-semibold':'text-slate-400'}">${mat.qtyAssigned}</td>
+            <td class="px-3 py-2.5 text-center">${done?'<span class="text-emerald-600 font-semibold">0 ✓</span>':`<span class="font-bold text-orange-500">${qtyUnalloc}</span>`}</td>
+            <td class="px-3 py-2.5 text-center ${stockClass}">${stockTotal > 0 ? stockTotal : '<span class="text-slate-300">0</span>'}</td>
+            <td class="px-3 py-2.5 text-right text-slate-600">$${mat.unitCost.toFixed(2)} <em class="text-[10px] text-slate-300">(.unitCost)</em></td>
+            <td class="px-3 py-2.5 text-right font-semibold ${qtyUnalloc>0?'text-slate-800':'text-slate-400'}">${qtyUnalloc>0?'$'+valueReqd:'—'}</td>
+            <td class="px-3 py-2.5 pr-4">
+              ${done
+                ? '<span class="text-xs text-emerald-600 font-medium">✓ Complete</span>'
+                : `<div class="flex items-center gap-1.5">
+                    <button onclick="assignSingle('${mat.id}')" class="text-xs px-2.5 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-100 font-medium whitespace-nowrap">Assign Stock</button>
+                    ${inCart
+                      ? '<span class="text-xs px-2.5 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-semibold whitespace-nowrap">In Order ✓</span>'
+                      : `<button onclick="addSingle('${mat.id}','${job.id}','${cc.id}')" class="text-xs px-2.5 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium whitespace-nowrap">Add to Order</button>`}
+                  </div>`}
+            </td>
+          </tr>`;
+      }).join('');
+
       return `
-        <tr class="border-b border-gray-50 hover:bg-blue-50">
-          <td class="pl-12 pr-3 py-2.5">
-            <input type="checkbox" id="mat-cb-${mat.id}" class="mat-cb w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer" ${selectedMaterials.has(mat.id)?'checked':''} onchange="toggleMaterial('${mat.id}',this.checked)">
-          </td>
-          <td class="px-3 py-2.5 text-gray-800">${mat.desc}</td>
-          <td class="px-3 py-2.5 text-center text-gray-600">${mat.qtyReq}</td>
-          <td class="px-3 py-2.5 text-center ${mat.qtyAssigned>0?'text-green-600 font-semibold':'text-gray-400'}">${mat.qtyAssigned}</td>
-          <td class="px-3 py-2.5 text-center">${done?'<span class="text-green-600 font-semibold">&#10003;</span>':`<span class="font-semibold text-orange-500">${qty}</span>`}</td>
-          <td class="px-3 py-2.5 text-gray-500">${mat.supplier}</td>
-          <td class="px-3 py-2.5 text-right text-gray-600">${qty>0?'$'+(qty*mat.unitCost).toFixed(2):'—'}</td>
-          <td class="px-3 py-2.5 text-right pr-4">
-            ${done
-              ? '<span class="text-xs text-green-600">&#10003; Complete</span>'
-              : `<div class="flex items-center justify-end gap-1.5">
-                  <button onclick="assignSingle('${mat.id}','${job.id}','${cc.id}')" class="text-xs px-2 py-1 bg-green-50 border border-green-200 text-green-700 rounded hover:bg-green-100">Assign Stock</button>
-                  ${inCart
-                    ? '<span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded font-semibold">In Order &#10003;</span>'
-                    : `<button onclick="addSingle('${mat.id}','${job.id}','${cc.id}')" class="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Add to Order</button>`}
-                </div>`}
-          </td>
-        </tr>`;
+        <div class="border-b border-slate-100 last:border-0">
+          <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 select-none" onclick="toggleExpand('${cc.id}')">
+            <div onclick="event.stopPropagation()">
+              <input type="checkbox" id="cc-cb-${cc.id}" class="cc-cb w-4 h-4 rounded border-slate-400 text-blue-600 cursor-pointer" ${allSel?'checked':''} onchange="event.stopPropagation();toggleCC('${cc.id}',this.checked)">
+            </div>
+            <svg id="chev-${cc.id}" class="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-150 ${isCollapsed?'':'rotate-90'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <div class="flex-1 flex items-center gap-2 min-w-0 flex-wrap">
+              <span class="font-bold text-slate-900">${cc.name}</span>
+              <span class="text-xs text-slate-400 font-mono">${cc.id} <em class="not-italic text-slate-300">(.id)</em></span>
+            </div>
+            <div class="flex items-center gap-4 flex-shrink-0 text-xs">
+              <span class="text-slate-500">${fmtDate(cc.scheduledDate)} <em class="text-slate-300">(.scheduled)</em></span>
+              ${toOrder.length>0
+                ? `<span class="flex items-center gap-1 font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>${toOrder.length} to order</span>`
+                : `<span class="font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">✓ Complete</span>`}
+            </div>
+          </div>
+          <div id="cc-body-${cc.id}" class="${isCollapsed?'hidden':''}">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-slate-50 border-y border-slate-100">
+                    <th class="pl-10 pr-3 py-2 w-8"></th>
+                    <th class="px-3 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Item <em class="font-normal text-slate-300 normal-case tracking-normal">(.catalogue.name)</em></th>
+                    <th class="px-3 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Required <em class="font-normal text-slate-300 normal-case tracking-normal">(.quantity)</em></th>
+                    <th class="px-3 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Assigned</th>
+                    <th class="px-3 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty Unallocated</th>
+                    <th class="px-3 py-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty in Stock <em class="font-normal text-slate-300 normal-case tracking-normal">(/storageDevices)</em></th>
+                    <th class="px-3 py-2 text-right text-xs font-semibold text-slate-400 uppercase tracking-wide">Cost Price <em class="font-normal text-slate-300 normal-case tracking-normal">(.unitCost)</em></th>
+                    <th class="px-3 py-2 text-right text-xs font-semibold text-slate-400 uppercase tracking-wide">Value of Stock Req'd</th>
+                    <th class="px-3 py-2 pr-4"></th>
+                  </tr>
+                </thead>
+                <tbody>${matRows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
     }).join('');
 
     return `
-      <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-3 overflow-hidden">
-        <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border-b border-gray-200 cursor-pointer hover:bg-gray-100 select-none" onclick="toggleExpand('${cc.id}')">
-          <div onclick="event.stopPropagation()">
-            <input type="checkbox" id="cc-cb-${cc.id}" class="cc-cb w-4 h-4 rounded border-gray-400 text-blue-600 cursor-pointer" ${allSel?'checked':''} onchange="event.stopPropagation();toggleCC('${cc.id}',this.checked)">
-          </div>
-          <svg id="chev-${cc.id}" class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-150 ${isCollapsed?'':'rotate-90'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          <div class="flex-1 flex items-center gap-3 min-w-0 flex-wrap">
-            <span class="font-bold text-gray-900">${cc.name}</span>
-            <span class="text-xs text-gray-400 font-mono">${cc.id}</span>
-            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${job.id}</span>
-            <span class="text-gray-500 text-sm truncate">${job.address}</span>
-          </div>
-          <div class="flex items-center gap-4 flex-shrink-0 text-xs">
-            <span class="text-gray-500 font-medium">${fmtDate(cc.scheduledDate)}</span>
-            <span class="text-gray-400">&#128100; ${job.tech}</span>
-            ${toOrder.length>0
-              ? `<span class="flex items-center gap-1 font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>${toOrder.length} to order</span>`
-              : `<span class="font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">&#10003; Complete</span>`}
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
+        <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center gap-3 flex-wrap">
+          <span class="font-bold text-blue-600 text-sm">${job.id} <em class="font-normal text-[10px] text-slate-300">(.id)</em></span>
+          <span class="text-slate-300 text-xs">·</span>
+          <span class="text-slate-700 font-medium text-sm">${job.address} <em class="font-normal text-[10px] text-slate-300">(.site.address)</em></span>
+          <div class="ml-auto flex items-center gap-2.5 text-xs">
+            <span class="text-slate-400">\u{1F464} ${job.tech} <em class="text-slate-300">(.technicians)</em></span>
+            ${jobStatusBadge(job.status)}
           </div>
         </div>
-        <div id="cc-body-${cc.id}" class="${isCollapsed?'hidden':''}">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-gray-100 bg-white">
-                <th class="pl-12 pr-3 py-2"></th>
-                <th class="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
-                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">Req'd</th>
-                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">Assigned</th>
-                <th class="px-3 py-2 text-center text-xs font-medium text-gray-400 uppercase">To Order</th>
-                <th class="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase">Supplier</th>
-                <th class="px-3 py-2 text-right text-xs font-medium text-gray-400 uppercase">Est. Cost</th>
-                <th class="px-3 py-2 pr-4"></th>
-              </tr>
-            </thead>
-            <tbody>${matRows}</tbody>
-          </table>
-        </div>
+        ${ccHtml}
       </div>`;
   }).join('');
 
-  // Fix indeterminate state (can't set via HTML attr)
+  // Fix indeterminate state
   getFilteredCCs().forEach(({cc}) => {
     const allSel = cc.materials.every(m => selectedMaterials.has(m.id));
     const someSel = cc.materials.some(m => selectedMaterials.has(m.id));
@@ -811,17 +1031,11 @@ function renderCCList() {
 }
 
 function toggleExpand(ccId) {
-  if (collapsedCCs.has(ccId)) { collapsedCCs.delete(ccId); } else { collapsedCCs.add(ccId); }
+  if (collapsedCCs.has(ccId)) collapsedCCs.delete(ccId); else collapsedCCs.add(ccId);
   const body = document.getElementById('cc-body-'+ccId);
   const chev = document.getElementById('chev-'+ccId);
   if (body) body.classList.toggle('hidden', collapsedCCs.has(ccId));
   if (chev) chev.classList.toggle('rotate-90', !collapsedCCs.has(ccId));
-}
-
-function assignSingle(matId, jobId, ccId) {
-  const r = findMat(matId); if (!r) return;
-  r.mat.qtyAssigned = r.mat.qtyReq;
-  renderCCList();
 }
 
 function addSingle(matId, jobId, ccId) {
@@ -835,7 +1049,7 @@ function addSingle(matId, jobId, ccId) {
 function renderBulkOrder() {
   const el = document.getElementById('bulk-order-content');
   if (cart.length===0) {
-    el.innerHTML=`<div class="bg-white rounded-xl border border-gray-200 p-14 text-center shadow-sm"><div class="text-5xl mb-3">&#128230;</div><p class="text-gray-500 font-semibold">No items in order yet</p><p class="text-gray-400 text-sm mt-1">Select materials from Scheduled Cost Centres and add them to your order.</p><button onclick="navigate('ccs')" class="mt-4 text-sm text-blue-600 hover:text-blue-800 font-semibold">View Scheduled CCs &rarr;</button></div>`;
+    el.innerHTML=`<div class="bg-white rounded-xl border border-slate-200 p-14 text-center shadow-sm"><div class="text-5xl mb-3">📦</div><p class="text-slate-600 font-semibold">No items in order yet</p><p class="text-slate-400 text-sm mt-1">Select materials from Scheduled Cost Centres and add them to your order.</p><button onclick="navigate('ccs')" class="mt-4 text-sm text-blue-600 hover:text-blue-800 font-semibold">View Scheduled CCs →</button></div>`;
     return;
   }
   const bySupplier = {};
@@ -844,30 +1058,31 @@ function renderBulkOrder() {
     if (!bySupplier[r.mat.supplier]) bySupplier[r.mat.supplier] = {email:r.mat.supplierEmail, items:[]};
     bySupplier[r.mat.supplier].items.push({...item, mat:r.mat, job:r.job, cc:r.cc});
   });
-  el.innerHTML = `<p class="text-sm text-gray-500 mb-4">${cart.length} item${cart.length!==1?'s':''} across ${Object.keys(bySupplier).length} supplier${Object.keys(bySupplier).length!==1?'s':''}</p>` +
+  el.innerHTML = `<p class="text-sm text-slate-500 mb-4">${cart.length} item${cart.length!==1?'s':''} across ${Object.keys(bySupplier).length} supplier${Object.keys(bySupplier).length!==1?'s':''}</p>` +
     Object.entries(bySupplier).map(([supplier, data]) => {
       const total = data.items.reduce((s,i)=>s+i.qty*i.mat.unitCost,0);
-      return `<div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-4 overflow-hidden">
-        <div class="px-5 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-          <div><span class="font-bold text-gray-800">${supplier}</span><span class="ml-2 text-xs text-gray-400">${data.email}</span></div>
-          <div class="flex items-center gap-4"><span class="font-semibold text-gray-700">Total: $${total.toFixed(2)}</span>
-            <button onclick="showSendModal('${supplier}')" class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg">Review &amp; Send PO &rarr;</button>
+      return `<div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
+        <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+          <div><span class="font-bold text-slate-800">${supplier}</span><span class="ml-2 text-xs text-slate-400">${data.email}</span></div>
+          <div class="flex items-center gap-4">
+            <span class="font-semibold text-slate-700">Total: $${total.toFixed(2)}</span>
+            <button onclick="showSendModal('${supplier}')" class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg">Review &amp; Send PO →</button>
           </div>
         </div>
-        <table class="w-full text-sm"><thead><tr class="border-b border-gray-100">
-          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
-          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Job / CC</th>
-          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Qty</th>
-          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Unit</th>
-          <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Total</th>
+        <table class="w-full text-sm"><thead><tr class="border-b border-slate-100">
+          <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Item</th>
+          <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Job / CC</th>
+          <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Qty</th>
+          <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Unit</th>
+          <th class="px-5 py-2 text-left text-xs font-semibold text-slate-400 uppercase tracking-wide">Total</th>
           <th class="px-5 py-2"></th>
         </tr></thead><tbody>
-          ${data.items.map(i=>`<tr class="border-b border-gray-50 hover:bg-gray-50">
-            <td class="px-5 py-2.5 text-gray-800">${i.mat.desc}</td>
-            <td class="px-5 py-2.5 text-gray-500">${i.job.id} / ${i.cc.name}</td>
-            <td class="px-5 py-2.5"><input type="number" value="${i.qty}" min="1" onchange="updateCartQty('${i.materialId}',this.value)" class="w-16 border border-gray-300 rounded px-2 py-1 text-sm text-center focus:outline-none focus:border-blue-400"></td>
-            <td class="px-5 py-2.5 text-gray-500">$${i.mat.unitCost.toFixed(2)}</td>
-            <td class="px-5 py-2.5 font-semibold text-gray-800">$${(i.qty*i.mat.unitCost).toFixed(2)}</td>
+          ${data.items.map(i=>`<tr class="border-b border-slate-50 hover:bg-slate-50">
+            <td class="px-5 py-2.5 text-slate-800">${i.mat.desc}</td>
+            <td class="px-5 py-2.5 text-slate-500">${i.job.id} / ${i.cc.name}</td>
+            <td class="px-5 py-2.5"><input type="number" value="${i.qty}" min="1" onchange="updateCartQty('${i.materialId}',this.value)" class="w-16 border border-slate-300 rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-blue-400"></td>
+            <td class="px-5 py-2.5 text-slate-500">$${i.mat.unitCost.toFixed(2)}</td>
+            <td class="px-5 py-2.5 font-semibold text-slate-800">$${(i.qty*i.mat.unitCost).toFixed(2)}</td>
             <td class="px-5 py-2.5 text-right"><button onclick="removeFromCart('${i.materialId}')" class="text-xs text-red-400 hover:text-red-600 font-medium">Remove</button></td>
           </tr>`).join('')}
         </tbody></table>
@@ -895,27 +1110,27 @@ function showSendModal(supplier) {
   const body = `Hi ${supplier} team,\n\nPlease find our purchase order below:\n\nPurchase Order: ${poRef}\nDate: ${todayStr}\nAccount: R&L Plumbing Ltd\n\nITEMS:\n${data.items.map(i=>`  - ${i.mat.desc}  Qty: ${i.qty}  Unit: $${i.mat.unitCost.toFixed(2)}  Total: $${(i.qty*i.mat.unitCost).toFixed(2)}`).join('\n')}\n\nORDER TOTAL: $${total.toFixed(2)} + GST\n\nPlease confirm receipt and advise expected delivery date.\n\nRegards,\nBilliejean\nR&L Plumbing Ltd\nprocurement@rlplumb.co.nz`;
 
   document.getElementById('modal-content').innerHTML = `
-    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-      <div><h2 class="text-lg font-bold text-gray-900">Review &amp; Send Purchase Order</h2><p class="text-sm text-gray-400 mt-0.5">${poRef} &rarr; ${supplier}</p></div>
-      <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+      <div><h2 class="text-lg font-bold text-slate-900">Review &amp; Send Purchase Order</h2><p class="text-sm text-slate-400 mt-0.5">${poRef} → ${supplier}</p></div>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
     </div>
     <div class="p-6">
       <div class="grid grid-cols-2 gap-4 mb-4">
-        <div><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">To</label><input value="${data.email}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
-        <div><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Subject</label><input value="Purchase Order ${poRef} – R&amp;L Plumbing Ltd" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">To</label><input value="${data.email}" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Subject</label><input value="Purchase Order ${poRef} – R&amp;L Plumbing Ltd" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400"></div>
       </div>
-      <div class="mb-4"><label class="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Email Body</label><textarea rows="12" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs font-mono text-gray-700 resize-none focus:outline-none focus:border-blue-400">${body}</textarea></div>
+      <div class="mb-4"><label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Email Body</label><textarea rows="12" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-700 resize-none focus:outline-none focus:border-blue-400">${body}</textarea></div>
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 text-sm text-blue-700 space-y-1.5">
-        <p class="text-xs font-bold text-blue-700 uppercase mb-2">On Send — happens automatically:</p>
-        <div class="flex gap-2"><span>&#10003;</span><span>Email sent to <strong>${supplier}</strong></span></div>
-        <div class="flex gap-2"><span>&#10003;</span><span>PO <strong>${poRef}</strong> status &rarr; <strong>Sent</strong> in SimPro</span></div>
-        ${affJobs.map(jId=>`<div class="flex gap-2"><span>&#10003;</span><span>Note added to Job <strong>${jId}</strong> in SimPro</span></div>`).join('')}
-        ${affCCs.map(c=>`<div class="flex gap-2"><span>&#10003;</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> (${c.jobId}) in SimPro + Monday.com</span></div>`).join('')}
-        ${affCCs.map(c=>`<div class="flex gap-2"><span>&#10003;</span><span>Task <strong>${c.ccId}</strong> closed (PO sent trigger)</span></div>`).join('')}
+        <p class="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">On Send — happens automatically:</p>
+        <div class="flex gap-2"><span>✓</span><span>Email sent to <strong>${supplier}</strong></span></div>
+        <div class="flex gap-2"><span>✓</span><span>PO <strong>${poRef}</strong> status → <strong>Sent</strong> in SimPro</span></div>
+        ${affJobs.map(jId=>`<div class="flex gap-2"><span>✓</span><span>Note added to Job <strong>${jId}</strong> in SimPro</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2"><span>✓</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> (${c.jobId}) in SimPro + Monday.com</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2"><span>✓</span><span>Task <strong>${c.ccId}</strong> closed (PO sent)</span></div>`).join('')}
       </div>
       <div class="flex justify-end gap-3">
-        <button onclick="closeModal()" class="text-sm px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancel</button>
-        <button onclick="sendPO('${supplier}','${poRef}')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold">Send Order &rarr;</button>
+        <button onclick="closeModal()" class="text-sm px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50">Cancel</button>
+        <button onclick="sendPO('${supplier}','${poRef}')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold">Send Order →</button>
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.remove('hidden');
@@ -942,26 +1157,28 @@ function sendPO(supplier, poRef) {
   poCounter++; updateCartBadge();
   document.getElementById('modal-content').innerHTML = `
     <div class="p-10 text-center">
-      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><svg class="w-9 h-9 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div>
-      <h2 class="text-xl font-extrabold text-gray-900 mb-1">Order Sent!</h2>
-      <p class="text-gray-400 text-sm mb-6">${poRef} sent to ${supplier}</p>
-      <div class="text-left bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6 space-y-2 text-sm">
-        <div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Email sent to <strong>${supplier}</strong></span></div>
-        <div class="flex gap-2 text-green-700"><span>&#9989;</span><span>PO <strong>${poRef}</strong> &rarr; <strong>Sent</strong> in SimPro</span></div>
-        ${affJobs.map(jId=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Note added to Job <strong>${jId}</strong></span></div>`).join('')}
-        ${affCCs.map(c=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> in SimPro + Monday.com</span></div>`).join('')}
-        ${affCCs.map(c=>`<div class="flex gap-2 text-green-700"><span>&#9989;</span><span>Task <strong>${c.ccId}</strong> closed</span></div>`).join('')}
+      <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-9 h-9 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h2 class="text-xl font-extrabold text-slate-900 mb-1">Order Sent!</h2>
+      <p class="text-slate-400 text-sm mb-6">${poRef} sent to ${supplier}</p>
+      <div class="text-left bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 space-y-2 text-sm">
+        <div class="flex gap-2 text-emerald-700"><span>✅</span><span>Email sent to <strong>${supplier}</strong></span></div>
+        <div class="flex gap-2 text-emerald-700"><span>✅</span><span>PO <strong>${poRef}</strong> → <strong>Sent</strong> in SimPro</span></div>
+        ${affJobs.map(jId=>`<div class="flex gap-2 text-emerald-700"><span>✅</span><span>Note added to Job <strong>${jId}</strong></span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2 text-emerald-700"><span>✅</span><span>Task created: <strong>${c.ccId} – ${c.ccName}</strong> in SimPro + Monday.com</span></div>`).join('')}
+        ${affCCs.map(c=>`<div class="flex gap-2 text-emerald-700"><span>✅</span><span>Task <strong>${c.ccId}</strong> closed</span></div>`).join('')}
       </div>
       <div class="flex justify-center gap-3">
-        <button onclick="closeModal();navigate('ccs')" class="text-sm px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Back to Cost Centres</button>
-        <button onclick="closeModal();navigate('bulk-order')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">Continue Ordering</button>
+        <button onclick="closeModal();navigate('ccs')" class="text-sm px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50">Back to Cost Centres</button>
+        <button onclick="closeModal();navigate('bulk-order')" class="text-sm px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">Continue Ordering</button>
       </div>
     </div>`;
 }
 
 // ===== INIT =====
 document.getElementById('today-display').textContent = TODAY.toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-navigate('ccs');
+// Show login screen on load (don't auto-navigate)
 </script>
 </body>
 </html>

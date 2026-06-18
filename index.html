@@ -119,18 +119,27 @@
 
       <!-- VIEW: Purchase Orders -->
       <div id="view-pos" class="p-6 hidden">
-        <h1 class="text-xl font-bold text-gray-900 mb-5">Purchase Orders</h1>
-        <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
-          <p class="text-gray-400">Sent purchase orders will appear here.</p>
+        <div class="flex items-center justify-between mb-5">
+          <h1 class="text-xl font-extrabold text-gray-900">Purchase Orders</h1>
+          <span class="text-xs text-gray-400 italic">Synced from SimPro</span>
         </div>
+        <!-- PO Status filter -->
+        <div class="flex items-center gap-2 mb-5">
+          <button onclick="setPOFilter('pending')" id="po-filter-pending" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Pending</button>
+          <button onclick="setPOFilter('all')"     id="po-filter-all"     class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All</button>
+          <button onclick="setPOFilter('received')" id="po-filter-received" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Received</button>
+        </div>
+        <div id="po-summary" class="mb-4"></div>
+        <div id="po-list"></div>
       </div>
 
       <!-- VIEW: Stock -->
       <div id="view-stock" class="p-6 hidden">
-        <h1 class="text-xl font-bold text-gray-900 mb-5">Stock</h1>
-        <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
-          <p class="text-gray-400">Stock levels will appear here.</p>
+        <div class="flex items-center justify-between mb-5">
+          <h1 class="text-xl font-extrabold text-gray-900">Stock – Storage Devices</h1>
+          <span class="text-xs text-gray-400 italic">Synced from SimPro</span>
         </div>
+        <div id="storage-list"></div>
       </div>
 
     </main>
@@ -211,6 +220,70 @@ const jobs = [
   }
 ];
 
+// ===== PURCHASE ORDERS DATA =====
+const purchaseOrders = [
+  { id:'PO-0995', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-10', sentDate:'2026-06-11', status:'Sent',
+    items:[{desc:'40mm P-Trap', qty:10, unitCost:8.50},{desc:'Cistern Fill Valve', qty:6, unitCost:18.00},{desc:'Tapware Set – Chrome', qty:2, unitCost:185.00},{desc:'Expansion Valve 350kPa', qty:3, unitCost:45.00}]},
+  { id:'PO-0997', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-12', sentDate:'2026-06-13', status:'Partially Received',
+    items:[{desc:'100mm Soil Pipe 6m', qty:8, unitCost:38.00},{desc:'Inspection Opening 100mm', qty:4, unitCost:22.00}]},
+  { id:'PO-0999', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-06-15', sentDate:'2026-06-16', status:'Sent',
+    items:[{desc:'15mm Copper Pipe 3m', qty:12, unitCost:24.00},{desc:'Basin Mixer Tap', qty:4, unitCost:145.00},{desc:'22mm Gate Valve', qty:6, unitCost:32.00}]},
+  { id:'PO-1000', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-17', sentDate:'2026-06-17', status:'Sent',
+    items:[{desc:'180L Hot Water Cylinder', qty:2, unitCost:895.00},{desc:'Expansion Valve 350kPa', qty:2, unitCost:45.00}]},
+  { id:'PO-0993', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-05', sentDate:'2026-06-06', status:'Received',
+    items:[{desc:'Close Coupled Suite', qty:3, unitCost:425.00},{desc:'40mm P-Trap', qty:20, unitCost:8.50}]},
+  { id:'PO-0990', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-01', sentDate:'2026-06-02', status:'Received',
+    items:[{desc:'90mm Soil Bend 45°', qty:10, unitCost:12.50},{desc:'40mm Waste Pipe 6m', qty:6, unitCost:29.00}]},
+];
+
+// ===== STORAGE DEVICES DATA =====
+const storageDevices = [
+  { id:'SD-001', name:'Workshop Shelving A', type:'Warehouse', location:'Henderson Depot', icon:'🏭',
+    parts:[
+      {partNo:'PL-001', desc:'40mm P-Trap',              qty:15, unit:'ea',   unitCost:8.50},
+      {partNo:'PL-002', desc:'15mm Copper Pipe 3m',       qty:8,  unit:'ea',   unitCost:24.00},
+      {partNo:'PL-003', desc:'Cistern Fill Valve',        qty:12, unit:'ea',   unitCost:18.00},
+      {partNo:'PL-004', desc:'Expansion Valve 350kPa',    qty:4,  unit:'ea',   unitCost:45.00},
+      {partNo:'PL-005', desc:'22mm Compression Elbow',    qty:20, unit:'ea',   unitCost:6.50},
+      {partNo:'PL-006', desc:'15mm Isolating Valve',      qty:10, unit:'ea',   unitCost:14.00},
+      {partNo:'PL-007', desc:'Silicone Sealant White',    qty:8,  unit:'tube', unitCost:12.00},
+    ]},
+  { id:'SD-002', name:'Workshop Shelving B', type:'Warehouse', location:'Henderson Depot', icon:'🏭',
+    parts:[
+      {partNo:'PL-008', desc:'100mm Soil Pipe 6m',        qty:3,  unit:'ea',   unitCost:38.00},
+      {partNo:'PL-009', desc:'Inspection Opening 100mm',  qty:6,  unit:'ea',   unitCost:22.00},
+      {partNo:'PL-010', desc:'40mm Waste Pipe 6m',        qty:5,  unit:'ea',   unitCost:29.00},
+      {partNo:'PL-011', desc:'90mm Soil Bend 45°',        qty:8,  unit:'ea',   unitCost:12.50},
+      {partNo:'PL-012', desc:'15mm Compression Tee',      qty:14, unit:'ea',   unitCost:7.80},
+    ]},
+  { id:'SD-003', name:'Ryan T. – Van', type:'Vehicle', location:'Van · ABC-123', icon:'🚐',
+    parts:[
+      {partNo:'PL-001', desc:'40mm P-Trap',               qty:4,  unit:'ea',   unitCost:8.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:10, unit:'ea',   unitCost:4.20},
+      {partNo:'PL-007', desc:'Silicone Sealant White',     qty:2,  unit:'tube', unitCost:12.00},
+      {partNo:'PL-014', desc:'PTFE Tape 12mm',             qty:6,  unit:'roll', unitCost:2.50},
+    ]},
+  { id:'SD-004', name:'Steve K. – Van', type:'Vehicle', location:'Van · XYZ-456', icon:'🚐',
+    parts:[
+      {partNo:'PL-001', desc:'40mm P-Trap',               qty:2,  unit:'ea',   unitCost:8.50},
+      {partNo:'PL-006', desc:'15mm Isolating Valve',       qty:3,  unit:'ea',   unitCost:14.00},
+      {partNo:'PL-014', desc:'PTFE Tape 12mm',             qty:4,  unit:'roll', unitCost:2.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:6,  unit:'ea',   unitCost:4.20},
+    ]},
+  { id:'SD-005', name:'Ben M. – Van', type:'Vehicle', location:'Van · DEF-789', icon:'🚐',
+    parts:[
+      {partNo:'PL-003', desc:'Cistern Fill Valve',         qty:3,  unit:'ea',   unitCost:18.00},
+      {partNo:'PL-005', desc:'22mm Compression Elbow',     qty:5,  unit:'ea',   unitCost:6.50},
+      {partNo:'PL-013', desc:'15mm Copper Elbow',          qty:8,  unit:'ea',   unitCost:4.20},
+      {partNo:'PL-007', desc:'Silicone Sealant White',     qty:2,  unit:'tube', unitCost:12.00},
+    ]},
+  { id:'SD-006', name:'Cavendish Site Storage', type:'Site', location:'8 Cavendish Drive, Manukau', icon:'📦',
+    parts:[
+      {partNo:'PL-003', desc:'Cistern Fill Valve',         qty:3,  unit:'ea',   unitCost:18.00},
+      {partNo:'PL-015', desc:'Caroma Hand Basin 400mm',    qty:2,  unit:'ea',   unitCost:195.00},
+    ]},
+];
+
 // ===== STATE =====
 let cart = [];
 let selectedMaterials = new Set();
@@ -281,6 +354,8 @@ function navigate(view) {
   document.getElementById('breadcrumb').textContent = titles[view];
   if (view === 'ccs') renderCCList();
   if (view === 'bulk-order') renderBulkOrder();
+  if (view === 'pos') renderPOs();
+  if (view === 'stock') renderStorage();
   document.getElementById('selection-footer').classList[view==='ccs' && selectedMaterials.size>0 ? 'remove' : 'add']('hidden');
   updateCartBadge();
 }
@@ -323,6 +398,186 @@ function applyCustomFilter() {
   selectedMaterials.clear();
   renderCCList();
   updateStickyFooter();
+}
+
+// ===== PURCHASE ORDERS RENDER =====
+let currentPOFilter = 'pending';
+
+function setPOFilter(f) {
+  currentPOFilter = f;
+  document.querySelectorAll('.po-filter-btn').forEach(b => {
+    b.classList.remove('bg-[#0f2d4a]','text-white');
+    b.classList.add('text-gray-600','bg-white','border','border-gray-300');
+  });
+  const el = document.getElementById('po-filter-' + f);
+  if (el) { el.classList.add('bg-[#0f2d4a]','text-white'); el.classList.remove('text-gray-600','bg-white','border','border-gray-300'); }
+  renderPOs();
+}
+
+function renderPOs() {
+  const statusMap = {
+    'Sent':              {bg:'bg-blue-100',  text:'text-blue-700'},
+    'Partially Received':{bg:'bg-amber-100', text:'text-amber-700'},
+    'Received':          {bg:'bg-green-100', text:'text-green-700'},
+    'Draft':             {bg:'bg-gray-100',  text:'text-gray-600'},
+  };
+  const pendingStatuses = ['Sent','Partially Received','Draft'];
+  const filtered = purchaseOrders.filter(po => {
+    if (currentPOFilter === 'pending')  return pendingStatuses.includes(po.status);
+    if (currentPOFilter === 'received') return po.status === 'Received';
+    return true;
+  });
+
+  const pendingTotal = purchaseOrders.filter(p => pendingStatuses.includes(p.status))
+    .reduce((s,po) => s + po.items.reduce((ss,i)=>ss+i.qty*i.unitCost,0), 0);
+  const pendingCount = purchaseOrders.filter(p => pendingStatuses.includes(p.status)).length;
+
+  document.getElementById('po-summary').innerHTML = `
+    <div class="flex items-center gap-0 bg-white border border-gray-200 rounded-xl shadow-sm mb-1 overflow-hidden">
+      <div class="text-center px-6 py-3 border-r border-gray-200">
+        <div class="text-2xl font-extrabold text-[#0f2d4a]">${pendingCount}</div>
+        <div class="text-xs text-gray-400 font-medium">Pending POs</div>
+      </div>
+      <div class="text-center px-6 py-3">
+        <div class="text-2xl font-extrabold text-orange-500">$${pendingTotal.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div class="text-xs text-gray-400 font-medium">Outstanding Value</div>
+      </div>
+    </div>`;
+
+  if (filtered.length === 0) {
+    document.getElementById('po-list').innerHTML = `<div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm"><p class="text-gray-400">No purchase orders in this category.</p></div>`;
+    return;
+  }
+
+  document.getElementById('po-list').innerHTML = `
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <table class="w-full text-sm">
+        <thead><tr class="bg-gray-50 border-b border-gray-200">
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase w-8"></th>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">PO #</th>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Supplier</th>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Date Sent</th>
+          <th class="px-5 py-3 text-center text-xs font-semibold text-gray-400 uppercase">Items</th>
+          <th class="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase">Total</th>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
+        </tr></thead>
+        <tbody>
+          ${filtered.map(po => {
+            const total = po.items.reduce((s,i)=>s+i.qty*i.unitCost,0);
+            const sc = statusMap[po.status] || statusMap['Draft'];
+            return `
+              <tr class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="togglePODetail('${po.id}')">
+                <td class="px-5 py-3 text-gray-400">
+                  <svg id="po-chev-${po.id}" class="w-4 h-4 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </td>
+                <td class="px-5 py-3 font-semibold text-blue-700">${po.id}</td>
+                <td class="px-5 py-3 text-gray-700">${po.supplier}</td>
+                <td class="px-5 py-3 text-gray-500">${new Date(po.sentDate+'T00:00:00').toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})}</td>
+                <td class="px-5 py-3 text-center text-gray-500">${po.items.length}</td>
+                <td class="px-5 py-3 text-right font-semibold text-gray-800">$${total.toFixed(2)}</td>
+                <td class="px-5 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}">${po.status}</span></td>
+              </tr>
+              <tr id="po-detail-${po.id}" class="hidden border-b border-gray-100 bg-blue-50">
+                <td colspan="7" class="px-10 py-3">
+                  <table class="w-full text-sm">
+                    <thead><tr class="text-xs font-medium text-gray-400 uppercase border-b border-gray-200">
+                      <th class="pb-2 text-left">Item</th>
+                      <th class="pb-2 text-center">Qty</th>
+                      <th class="pb-2 text-right">Unit Cost</th>
+                      <th class="pb-2 text-right">Line Total</th>
+                    </tr></thead>
+                    <tbody>
+                      ${po.items.map(i=>`
+                        <tr class="border-b border-gray-100 last:border-0">
+                          <td class="py-2 text-gray-700">${i.desc}</td>
+                          <td class="py-2 text-center text-gray-600">${i.qty}</td>
+                          <td class="py-2 text-right text-gray-500">$${i.unitCost.toFixed(2)}</td>
+                          <td class="py-2 text-right font-medium text-gray-800">$${(i.qty*i.unitCost).toFixed(2)}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                  </table>
+                </td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function togglePODetail(poId) {
+  const row = document.getElementById('po-detail-' + poId);
+  const chev = document.getElementById('po-chev-' + poId);
+  if (!row) return;
+  const hidden = row.classList.toggle('hidden');
+  if (chev) chev.classList.toggle('rotate-90', !hidden);
+}
+
+// ===== STORAGE DEVICES RENDER =====
+let openStorageDevices = new Set();
+
+function renderStorage() {
+  document.getElementById('storage-list').innerHTML = storageDevices.map(sd => {
+    const totalValue = sd.parts.reduce((s,p)=>s+p.qty*p.unitCost,0);
+    const isOpen = openStorageDevices.has(sd.id);
+    const typeColour = sd.type==='Vehicle' ? 'bg-blue-50 text-blue-700 border-blue-200'
+                     : sd.type==='Site'    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                     :                       'bg-gray-100 text-gray-600 border-gray-200';
+    const partsRows = sd.parts.map(p => `
+      <tr class="border-b border-gray-50 hover:bg-gray-50">
+        <td class="px-5 py-2.5 font-mono text-xs text-gray-400">${p.partNo}</td>
+        <td class="px-5 py-2.5 text-gray-800">${p.desc}</td>
+        <td class="px-5 py-2.5 text-center font-semibold ${p.qty<=3?'text-orange-500':'text-gray-700'}">${p.qty}</td>
+        <td class="px-5 py-2.5 text-center text-gray-500">${p.unit}</td>
+        <td class="px-5 py-2.5 text-right text-gray-500">$${p.unitCost.toFixed(2)}</td>
+        <td class="px-5 py-2.5 text-right font-medium text-gray-700">$${(p.qty*p.unitCost).toFixed(2)}</td>
+      </tr>`).join('');
+
+    return `
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-3 overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-gray-50 select-none" onclick="toggleStorage('${sd.id}')">
+          <span class="text-2xl">${sd.icon}</span>
+          <svg id="sd-chev-${sd.id}" class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-150 ${isOpen?'rotate-90':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-gray-900">${sd.name}</span>
+              <span class="text-xs font-medium px-2 py-0.5 rounded-full border ${typeColour}">${sd.type}</span>
+            </div>
+            <div class="text-xs text-gray-400 mt-0.5">${sd.location}</div>
+          </div>
+          <div class="flex items-center gap-6 text-right flex-shrink-0">
+            <div>
+              <div class="font-semibold text-gray-700">${sd.parts.length} parts</div>
+              <div class="text-xs text-gray-400">in stock</div>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-700">$${totalValue.toFixed(2)}</div>
+              <div class="text-xs text-gray-400">est. value</div>
+            </div>
+          </div>
+        </div>
+        <div id="sd-body-${sd.id}" class="${isOpen?'':'hidden'} border-t border-gray-100">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-gray-50 border-b border-gray-100">
+              <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Part #</th>
+              <th class="px-5 py-2 text-left text-xs font-medium text-gray-400 uppercase">Description</th>
+              <th class="px-5 py-2 text-center text-xs font-medium text-gray-400 uppercase">Qty</th>
+              <th class="px-5 py-2 text-center text-xs font-medium text-gray-400 uppercase">Unit</th>
+              <th class="px-5 py-2 text-right text-xs font-medium text-gray-400 uppercase">Unit Cost</th>
+              <th class="px-5 py-2 text-right text-xs font-medium text-gray-400 uppercase">Total Value</th>
+            </tr></thead>
+            <tbody>${partsRows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleStorage(sdId) {
+  if (openStorageDevices.has(sdId)) { openStorageDevices.delete(sdId); } else { openStorageDevices.add(sdId); }
+  const body = document.getElementById('sd-body-' + sdId);
+  const chev = document.getElementById('sd-chev-' + sdId);
+  if (body) body.classList.toggle('hidden', !openStorageDevices.has(sdId));
+  if (chev) chev.classList.toggle('rotate-90', openStorageDevices.has(sdId));
 }
 
 // ===== SELECTION =====

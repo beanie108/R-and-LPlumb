@@ -125,9 +125,9 @@
         </div>
         <!-- PO Status filter -->
         <div class="flex items-center gap-2 mb-5">
-          <button onclick="setPOFilter('pending')" id="po-filter-pending" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Pending</button>
-          <button onclick="setPOFilter('all')"     id="po-filter-all"     class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All</button>
-          <button onclick="setPOFilter('received')" id="po-filter-received" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Received</button>
+          <button onclick="setPOFilter('pending')"   id="po-filter-pending"   class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Pending</button>
+          <button onclick="setPOFilter('received')"  id="po-filter-received"  class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Received</button>
+          <button onclick="setPOFilter('completed')" id="po-filter-completed" class="po-filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Completed</button>
         </div>
         <div id="po-summary" class="mb-4"></div>
         <div id="po-list"></div>
@@ -223,17 +223,38 @@ const jobs = [
 // ===== PURCHASE ORDERS DATA =====
 const purchaseOrders = [
   { id:'PO-0995', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-10', sentDate:'2026-06-11', status:'Sent',
+    jobId:'J-2847', ccId:'CC-001', ccName:'Bathroom',
     items:[{desc:'40mm P-Trap', qty:10, unitCost:8.50},{desc:'Cistern Fill Valve', qty:6, unitCost:18.00},{desc:'Tapware Set – Chrome', qty:2, unitCost:185.00},{desc:'Expansion Valve 350kPa', qty:3, unitCost:45.00}]},
   { id:'PO-0997', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-12', sentDate:'2026-06-13', status:'Partially Received',
+    jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
     items:[{desc:'100mm Soil Pipe 6m', qty:8, unitCost:38.00},{desc:'Inspection Opening 100mm', qty:4, unitCost:22.00}]},
   { id:'PO-0999', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-06-15', sentDate:'2026-06-16', status:'Sent',
+    jobId:'J-2863', ccId:'CC-005', ccName:'Basins',
     items:[{desc:'15mm Copper Pipe 3m', qty:12, unitCost:24.00},{desc:'Basin Mixer Tap', qty:4, unitCost:145.00},{desc:'22mm Gate Valve', qty:6, unitCost:32.00}]},
   { id:'PO-1000', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-17', sentDate:'2026-06-17', status:'Sent',
+    jobId:'J-2847', ccId:'CC-002', ccName:'Hot Water Cylinder',
     items:[{desc:'180L Hot Water Cylinder', qty:2, unitCost:895.00},{desc:'Expansion Valve 350kPa', qty:2, unitCost:45.00}]},
   { id:'PO-0993', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-05', sentDate:'2026-06-06', status:'Received',
+    jobId:'J-2863', ccId:'CC-004', ccName:'Toilets',
     items:[{desc:'Close Coupled Suite', qty:3, unitCost:425.00},{desc:'40mm P-Trap', qty:20, unitCost:8.50}]},
   { id:'PO-0990', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-06-01', sentDate:'2026-06-02', status:'Received',
+    jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
     items:[{desc:'90mm Soil Bend 45°', qty:10, unitCost:12.50},{desc:'40mm Waste Pipe 6m', qty:6, unitCost:29.00}]},
+  { id:'PO-0985', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-05-20', sentDate:'2026-05-21', status:'Completed',
+    jobId:'J-2863', ccId:'CC-004', ccName:'Toilets',
+    items:[{desc:'Close Coupled Suite', qty:2, unitCost:425.00},{desc:'Cistern Fill Valve', qty:4, unitCost:18.00},{desc:'15mm Isolating Valve', qty:6, unitCost:14.00}]},
+  { id:'PO-0982', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-05-15', sentDate:'2026-05-16', status:'Completed',
+    jobId:'J-2863', ccId:'CC-005', ccName:'Basins',
+    items:[{desc:'Basin Mixer Tap', qty:4, unitCost:145.00},{desc:'15mm Copper Pipe 3m', qty:10, unitCost:24.00}]},
+  { id:'PO-0979', supplier:'Reece', supplierEmail:'orders@reece.co.nz', createdDate:'2026-05-10', sentDate:'2026-05-11', status:'Completed',
+    jobId:'J-2851', ccId:'CC-003', ccName:'Rough-In',
+    items:[{desc:'100mm Soil Pipe 6m', qty:6, unitCost:38.00},{desc:'Inspection Opening 100mm', qty:4, unitCost:22.00},{desc:'90mm Soil Bend 45°', qty:8, unitCost:12.50}]},
+  { id:'PO-0998', supplier:'Plumbing World', supplierEmail:'orders@plumbingworld.co.nz', createdDate:'2026-06-14', sentDate:'2026-06-14', status:'Sent',
+    jobId:null, ccId:null, ccName:null,
+    items:[{desc:'40mm P-Trap', qty:30, unitCost:8.50},{desc:'15mm Isolating Valve', qty:15, unitCost:14.00},{desc:'Cistern Fill Valve', qty:20, unitCost:18.00}]},
+  { id:'PO-0988', supplier:'Tradelink', supplierEmail:'trade@tradelink.co.nz', createdDate:'2026-06-03', sentDate:'2026-06-04', status:'Received',
+    jobId:null, ccId:null, ccName:null,
+    items:[{desc:'15mm Copper Pipe 3m', qty:20, unitCost:24.00},{desc:'22mm Compression Elbow', qty:25, unitCost:6.50},{desc:'15mm Copper Elbow', qty:30, unitCost:4.20}]},
 ];
 
 // ===== STORAGE DEVICES DATA =====
@@ -418,13 +439,15 @@ function renderPOs() {
   const statusMap = {
     'Sent':              {bg:'bg-blue-100',  text:'text-blue-700'},
     'Partially Received':{bg:'bg-amber-100', text:'text-amber-700'},
-    'Received':          {bg:'bg-green-100', text:'text-green-700'},
-    'Draft':             {bg:'bg-gray-100',  text:'text-gray-600'},
+    'Received':          {bg:'bg-green-100',  text:'text-green-700'},
+    'Completed':         {bg:'bg-purple-100', text:'text-purple-700'},
+    'Draft':             {bg:'bg-gray-100',   text:'text-gray-600'},
   };
   const pendingStatuses = ['Sent','Partially Received','Draft'];
   const filtered = purchaseOrders.filter(po => {
-    if (currentPOFilter === 'pending')  return pendingStatuses.includes(po.status);
-    if (currentPOFilter === 'received') return po.status === 'Received';
+    if (currentPOFilter === 'pending')   return pendingStatuses.includes(po.status);
+    if (currentPOFilter === 'received')  return po.status === 'Received';
+    if (currentPOFilter === 'completed') return po.status === 'Completed';
     return true;
   });
 
@@ -456,6 +479,7 @@ function renderPOs() {
           <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase w-8"></th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">PO #</th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Supplier</th>
+          <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Job / Cost Centre</th>
           <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Date Sent</th>
           <th class="px-5 py-3 text-center text-xs font-semibold text-gray-400 uppercase">Items</th>
           <th class="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase">Total</th>
@@ -472,13 +496,18 @@ function renderPOs() {
                 </td>
                 <td class="px-5 py-3 font-semibold text-blue-700">${po.id}</td>
                 <td class="px-5 py-3 text-gray-700">${po.supplier}</td>
+                <td class="px-5 py-3">
+                  ${po.jobId
+                    ? `<span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded mr-1">${po.jobId}</span><span class="text-gray-500">${po.ccId} – ${po.ccName}</span>`
+                    : `<span class="text-xs font-medium text-gray-400 italic">Stock order</span>`}
+                </td>
                 <td class="px-5 py-3 text-gray-500">${new Date(po.sentDate+'T00:00:00').toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})}</td>
                 <td class="px-5 py-3 text-center text-gray-500">${po.items.length}</td>
                 <td class="px-5 py-3 text-right font-semibold text-gray-800">$${total.toFixed(2)}</td>
                 <td class="px-5 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}">${po.status}</span></td>
               </tr>
               <tr id="po-detail-${po.id}" class="hidden border-b border-gray-100 bg-blue-50">
-                <td colspan="7" class="px-10 py-3">
+                <td colspan="8" class="px-10 py-3">
                   <table class="w-full text-sm">
                     <thead><tr class="text-xs font-medium text-gray-400 uppercase border-b border-gray-200">
                       <th class="pb-2 text-left">Item</th>

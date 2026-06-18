@@ -75,12 +75,22 @@
         </div>
 
         <!-- Filter -->
-        <div class="flex items-center gap-2 mb-5">
+        <div class="flex items-center flex-wrap gap-2 mb-2">
           <span class="text-xs font-semibold text-gray-500 uppercase mr-1">Show:</span>
-          <button onclick="setFilter(3)" id="filter-3" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Next 3 Days</button>
-          <button onclick="setFilter(5)" id="filter-5" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 5 Days</button>
-          <button onclick="setFilter(7)" id="filter-7" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 7 Days</button>
-          <button onclick="setFilter(99)" id="filter-99" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All Upcoming</button>
+          <button onclick="setFilter(3)"  id="filter-3"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0f2d4a] text-white">Next 3 Days</button>
+          <button onclick="setFilter(5)"  id="filter-5"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 5 Days</button>
+          <button onclick="setFilter(7)"  id="filter-7"    class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 7 Days</button>
+          <button onclick="setFilter(14)" id="filter-14"   class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Next 14 Days</button>
+          <button onclick="setFilter(99)" id="filter-99"   class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">All Upcoming</button>
+          <button onclick="setFilter('custom')" id="filter-custom" class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:border-gray-400">Custom</button>
+        </div>
+        <!-- Custom date range (shown only when Custom selected) -->
+        <div id="custom-date-row" class="hidden flex items-center gap-2 mb-3 pl-1">
+          <span class="text-xs text-gray-500 font-medium">From</span>
+          <input type="date" id="custom-from" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
+          <span class="text-xs text-gray-500 font-medium">To</span>
+          <input type="date" id="custom-to"   class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400 bg-white">
+          <button onclick="applyCustomFilter()" class="px-4 py-1.5 bg-[#0f2d4a] text-white text-sm font-semibold rounded-lg hover:bg-blue-900">Apply</button>
         </div>
 
         <!-- Summary -->
@@ -205,6 +215,7 @@ const jobs = [
 let cart = [];
 let selectedMaterials = new Set();
 let currentFilter = 3;
+let customStart = null, customEnd = null;
 let collapsedCCs = new Set();
 let poCounter = 1001;
 
@@ -221,12 +232,19 @@ function fmtDate(dateStr) {
 }
 
 function getFilteredCCs() {
-  const end = new Date(TODAY);
-  end.setDate(end.getDate() + (currentFilter === 99 ? 365 : currentFilter));
+  let start, end;
+  if (currentFilter === 'custom' && customStart && customEnd) {
+    start = new Date(customStart + 'T00:00:00');
+    end   = new Date(customEnd   + 'T00:00:00');
+  } else {
+    start = new Date(TODAY);
+    end   = new Date(TODAY);
+    end.setDate(end.getDate() + (currentFilter === 99 ? 365 : currentFilter));
+  }
   const result = [];
   jobs.forEach(job => job.costCentres.forEach(cc => {
     const d = new Date(cc.scheduledDate + 'T00:00:00');
-    if (d >= TODAY && d <= end) result.push({cc, job});
+    if (d >= start && d <= end) result.push({cc, job});
   }));
   result.sort((a,b) => new Date(a.cc.scheduledDate) - new Date(b.cc.scheduledDate));
   return result;
@@ -268,14 +286,40 @@ function navigate(view) {
 }
 
 // ===== FILTER =====
-function setFilter(days) {
-  currentFilter = days;
+function setFilter(val) {
+  currentFilter = val;
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.remove('bg-[#0f2d4a]','text-white');
     b.classList.add('text-gray-600','bg-white','border','border-gray-300');
   });
-  const el = document.getElementById('filter-' + days);
+  const el = document.getElementById('filter-' + val);
   if (el) { el.classList.add('bg-[#0f2d4a]','text-white'); el.classList.remove('text-gray-600','bg-white','border','border-gray-300'); }
+  // Show/hide custom date row
+  const row = document.getElementById('custom-date-row');
+  if (val === 'custom') {
+    row.classList.remove('hidden');
+    // Pre-fill defaults: today → today+14
+    if (!document.getElementById('custom-from').value) {
+      const from = new Date(TODAY), to = new Date(TODAY);
+      to.setDate(to.getDate() + 14);
+      document.getElementById('custom-from').value = from.toISOString().split('T')[0];
+      document.getElementById('custom-to').value   = to.toISOString().split('T')[0];
+    }
+    // Don't re-render until Apply is clicked
+    return;
+  } else {
+    row.classList.add('hidden');
+    customStart = null; customEnd = null;
+  }
+  selectedMaterials.clear();
+  renderCCList();
+  updateStickyFooter();
+}
+
+function applyCustomFilter() {
+  customStart = document.getElementById('custom-from').value;
+  customEnd   = document.getElementById('custom-to').value;
+  if (!customStart || !customEnd) return;
   selectedMaterials.clear();
   renderCCList();
   updateStickyFooter();
@@ -360,11 +404,16 @@ function renderCCList() {
   const filtered = getFilteredCCs();
 
   // Count excluded CCs (for the hint)
-  const endDate = new Date(TODAY); endDate.setDate(endDate.getDate() + (currentFilter===99?365:currentFilter));
+  let excStart, excEnd;
+  if (currentFilter === 'custom' && customStart && customEnd) {
+    excStart = new Date(customStart+'T00:00:00'); excEnd = new Date(customEnd+'T00:00:00');
+  } else {
+    excStart = new Date(TODAY); excEnd = new Date(TODAY); excEnd.setDate(excEnd.getDate()+(currentFilter===99?365:currentFilter));
+  }
   let excluded = 0;
   jobs.forEach(job => job.costCentres.forEach(cc => {
     const d = new Date(cc.scheduledDate+'T00:00:00');
-    if (d > endDate) excluded++;
+    if (d < excStart || d > excEnd) excluded++;
   }));
 
   const totalItems = filtered.reduce((s,{cc})=>s+cc.materials.filter(m=>m.qtyReq-m.qtyAssigned>0).length, 0);
